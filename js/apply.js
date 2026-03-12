@@ -1,13 +1,17 @@
 // apply.js - Discord Webhook Form Handler
 
-const DISCORD_WEBHOOK_URL =
+const DISCORD_WEBHOOK_URL = 
   "https://discord.com/api/webhooks/1462211333763366952/oIXXMuPuas3IcZc26UY02nZEvHadLvqyqGUfpL-7asOQkK2aeeRw_NfR_CoWZnGp5j5c";
+
+// REPLACE THESE WITH YOUR ACTUAL ROLE IDs
+const OFFICER_ROLE_ID = "123456789012345678";  // ← Get from Discord: Right-click Officer role → Copy ID
+const RAID_LEADER_ROLE_ID = "987654321098765432";  // ← Get from Discord: Right-click Raid Leader role → Copy ID
 
 const form = document.getElementById("applyForm");
 const submitBtn = document.getElementById("submitBtn");
 const successMessage = document.getElementById("successMessage");
 
-// Form data object
+// Form data object - FIXED FIELD NAMES
 const formData = {
   charName: document.getElementById("charName"),
   btag: document.getElementById("btag"),
@@ -15,7 +19,8 @@ const formData = {
   wowExp: document.getElementById("wowExp"),
   prevGuilds: document.getElementById("prevGuilds"),
   mainSpec: document.getElementById("mainSpec"),
-  logs: document.getElementById("logs"),
+  raiderIo: document.getElementById("raiderIo"),      // ← FIXED: was "logs"
+  warcraftLogs: document.getElementById("warcraftLogs"), // ← NEW
   attendance: document.getElementById("attendance"),
 };
 
@@ -44,10 +49,17 @@ function validateForm() {
     isValid = false;
   }
 
-  // Logs URL validation (if provided)
-  const logsValue = formData.logs.value.trim();
+  // Raider.IO URL validation (if provided)
+  const raiderIoValue = formData.raiderIo.value.trim();
+  if (raiderIoValue && !raiderIoValue.includes("raider.io")) {
+    showError("raiderIo", "❌ Érvénytelen Raider.IO link!");
+    isValid = false;
+  }
+
+  // Warcraft Logs URL validation (if provided)
+  const logsValue = formData.warcraftLogs.value.trim();
   if (logsValue && !logsValue.includes("warcraftlogs.com")) {
-    showError("logs", "❌ Érvénytelen WarcraftLogs link!");
+    showError("warcraftLogs", "❌ Érvénytelen WarcraftLogs link!");
     isValid = false;
   }
 
@@ -80,10 +92,11 @@ function clearErrors() {
   });
 }
 
-// Send to Discord webhook
+// Send to Discord webhook WITH ROLE PINGS
 async function sendToDiscord(data) {
   const message = {
-    content: `**🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
+    content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
+
 
 **👤 Karakter neve:** ${data.charName}
 **🔗 BattleTag:** ${data.btag}
@@ -91,9 +104,15 @@ async function sendToDiscord(data) {
 **📋 Miért Eternis?:** ${data.wowExp}
 **❓ Korábbi tapasztalat:** ${data.prevGuilds}
 **⚔️ Main spec / Ilvl:** ${data.mainSpec}
-**📊 WarcraftLogs:** ${data.logs || "Nincs megadva"}
+**📊 Raider.IO:** ${data.raiderIo || "Nincs megadva"}
+**📋 Warcraft Logs:** ${data.warcraftLogs || "Nincs megadva"}
 **📅 Raid aktivitás:** ${data.attendance}
 **⏰ Elküldve:** ${new Date().toLocaleString("hu-HU")}`,
+    
+    // PING ONLY SPECIFIC ROLES
+    allowed_mentions: {
+      roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID]
+    }
   };
 
   try {
@@ -131,7 +150,7 @@ form.addEventListener("submit", async (e) => {
   submitBtn.disabled = true;
   submitBtn.textContent = "Küldés...";
 
-  // Prepare data
+  // Prepare data - FIXED FIELD NAMES
   const data = {
     charName: formData.charName.value.trim(),
     btag: formData.btag.value.trim(),
@@ -139,7 +158,8 @@ form.addEventListener("submit", async (e) => {
     wowExp: formData.wowExp.value.trim(),
     prevGuilds: formData.prevGuilds.value.trim(),
     mainSpec: formData.mainSpec.value.trim(),
-    logs: formData.logs.value.trim(),
+    raiderIo: formData.raiderIo.value.trim(),        // ← FIXED
+    warcraftLogs: formData.warcraftLogs.value.trim(), // ← NEW
     attendance: formData.attendance.value.trim(),
   };
 
