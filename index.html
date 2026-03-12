@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eternis - WoW Guild</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="bg-wrapper"></div>
+
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html" class="logo">Eternis</a>
+        </div>
+
+        <!-- Hamburger -->
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <!-- Navigation -->
+        <nav id="nav-menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="roster.html">Roster</a></li> -->
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="rules.html">Szabályok</a></li>
+            <li><a href="apply.html">Jelentkezés</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME PAGE -->
+      <section class="hero active">
+        <h1>Eternis</h1>
+
+        <p style="color: #888; font-size: 14px">
+          World of Warcraft | Ragnaros | EU servers
+        </p>
+
+        <div class="info-section">
+          <h3>Rólunk</h3>
+          <p>
+            Az Eternis egy mythic progression guild a EU-Ragnaros szerveren,
+            elkötelezvett a World of Warcraft raid tartalmainak csúcsának
+            meghódítása iránt. Alapítóink veterán raiderek, több kiegészítőnyi
+            tapasztalattal; precíziós mechanikai kivitelezést kombinálunk
+            innovatív stratégiákkal a legkéményebb találkozók lekúzdéséhez.
+          </p>
+          <p>
+            Core raid csapatunk 20 játékosból áll, akik nyomás alatt is
+            teljesítének, és kiemelkednek a magas nyomás alatt. Versenyképes
+            légkört tartunk fent, miközben támogatő közösséget építünk, ahol
+            minden csapattag fontos.
+          </p>
+        </div>
+        <div class="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/SiIjThwKLaE?autoplay=1&mute=1"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">Eternis</div>
+
+        <div class="footer-links">
+          <a
+            href="https://discord.gg/eternis"
+            class="footer-link"
+            target="_blank"
+            >Discord</a
+          >
+          <a href="apply.html" class="footer-link">Apply</a>
+          <a href="rules.html" class="footer-link">Szabályok</a>
+        </div>
+
+        <div class="footer-info">
+          <p>Mythic raiding guild | CE or bust | Trial applications open</p>
+          <p>WoW The War Within | EU servers</p>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-copyright">
+          © 2026 Eternis Guild. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navMenu = document.getElementById("nav-menu");
+
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        navMenu.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>

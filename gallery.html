@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eternis - WoW Guild | Gallery</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="/css/gallery-styles.css" />
+  </head>
+  <body>
+    <div class="bg-wrapper"></div>
+
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html" class="logo">Eternis</a>
+        </div>
+
+        <!-- Hamburger -->
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <!-- Navigation -->
+        <nav id="nav-menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="roster.html">Roster</a></li> -->
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="rules.html">Szabályok</a></li>
+            <li><a href="apply.html">Jelentkezés</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Header -->
+      <div>
+        <h1>Galéria</h1>
+        <div>Eternis • Epic Moments • Kills</div>
+      </div>
+
+      <!-- Grid -->
+      <div id="galleryGrid">
+        <!-- Gallery items will be inserted here by JavaScript -->
+      </div>
+    </main>
+
+    <!-- Fullscreen Modal -->
+    <div id="fullscreenOverlay" class="fullscreen-overlay">
+      <img id="fullscreenImg" class="fullscreen-img" src="" alt="Fullscreen" />
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">Eternis</div>
+
+        <div class="footer-links">
+          <a
+            href="https://discord.gg/eternis"
+            class="footer-link"
+            target="_blank"
+            >Discord</a
+          >
+          <a href="apply.html" class="footer-link">Apply</a>
+          <a href="rules.html" class="footer-link">Szabályok</a>
+        </div>
+
+        <div class="footer-info">
+          <p>Mythic raiding guild | CE or bust | Trial applications open</p>
+          <p>WoW The War Within | EU servers</p>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-copyright">
+          © 2026 Eternis Guild. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // ============================================
+      // GALLERY DATA
+      // ============================================
+      const galleryImages = [
+        // Add your image URLs here
+        "/gallery/1.jpg",
+        "/gallery/1.jpg",
+        "/gallery/1.jpg",
+        "/gallery/1.jpg",
+        "/gallery/1.jpg",
+      ];
+
+      // ============================================
+      // GALLERY ITEM COMPONENT
+      // ============================================
+      function createGalleryItem(src) {
+        const item = document.createElement("div");
+        item.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "Guild Moment";
+        img.className = "gallery-img";
+
+        const overlay = document.createElement("div");
+        overlay.className = "gallery-overlay";
+        overlay.innerHTML = `<span class="gallery-overlay-text">View Fullscreen</span>`;
+
+        item.appendChild(img);
+        item.appendChild(overlay);
+
+        item.addEventListener("click", () => openFullscreen(src));
+        item.addEventListener("mouseenter", () =>
+          item.classList.add("hovered"),
+        );
+        item.addEventListener("mouseleave", () =>
+          item.classList.remove("hovered"),
+        );
+
+        return item;
+      }
+
+      // ============================================
+      // FULLSCREEN LOGIC
+      // ============================================
+      const fullscreenOverlay = document.getElementById("fullscreenOverlay");
+      const fullscreenImg = document.getElementById("fullscreenImg");
+
+      function openFullscreen(src) {
+        fullscreenImg.src = src;
+        fullscreenOverlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeFullscreen() {
+        fullscreenOverlay.classList.remove("active");
+        document.body.style.overflow = "auto";
+      }
+
+      // Close on overlay click
+      fullscreenOverlay.addEventListener("click", closeFullscreen);
+
+      // Close on ESC key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeFullscreen();
+        }
+      });
+
+      // ============================================
+      // RENDER GALLERY
+      // ============================================
+      function renderGallery() {
+        const galleryGrid = document.getElementById("galleryGrid");
+        galleryGrid.innerHTML = "";
+
+        if (galleryImages.length === 0) {
+          galleryGrid.innerHTML = `
+                    <div class="gallery-empty">
+                        <p>📸 Jelenleg nincs kép a galériában</p>
+                        <p style="font-size: 0.9rem; color: #666;">Hamarosan megjelenik az első fotó!</p>
+                    </div>
+                `;
+          return;
+        }
+
+        galleryImages.forEach((src) => {
+          const item = createGalleryItem(src);
+          galleryGrid.appendChild(item);
+        });
+
+        console.log(`✅ Gallery rendered (${galleryImages.length} images)`);
+      }
+
+      // Initialize on load
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("🎬 Gallery initializing...");
+        renderGallery();
+        console.log("✅ Gallery ready!");
+      });
+    </script>
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navMenu = document.getElementById("nav-menu");
+
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        navMenu.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>
