@@ -212,16 +212,17 @@
 }
 
 .role-badge.healer {
-  background: rgba(245, 140, 186, 0.15);
-  color: #f58cba;
-  border-color: #f58cba;
+  background: rgba(0, 255, 150, 0.15);
+  color: #00ff96;
+  border-color: #00ff96;
   backdrop-filter: blur(5px);
 }
 
 .role-badge.healer:hover {
-  background: rgba(245, 140, 186, 0.3);
-  box-shadow: 0 0 15px rgba(245, 140, 186, 0.4);
+  background: rgba(0, 255, 150, 0.3);
+  box-shadow: 0 0 15px rgba(0, 255, 150, 0.4);
 }
+
 
 /* ============ RAIDER.IO LINK ============ */
 .raiderio-link {
