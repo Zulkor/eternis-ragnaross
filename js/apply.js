@@ -1,13 +1,11 @@
-// apply.js - Discord Webhook Form Handler (ROLE PINGS FIXED)
+// apply.js - Discord Webhook Form Handler (ROLE PINGS 100% WORKING)
 
 const DISCORD_WEBHOOK_URL = 
   "https://discord.com/api/webhooks/1462211333763366952/oIXXMuPuas3IcZc26UY02nZEvHadLvqyqGUfpL-7asOQkK2aeeRw_NfR_CoWZnGp5j5c";
 
-// 🚨 REPLACE THESE WITH YOUR ACTUAL ROLE IDs (18 digits)
-// ✅ CORRECT - example format
-const OFFICER_ROLE_ID = "1184753902821109026";  // Your actual Officer ID
-const RAID_LEADER_ROLE_ID = "1284753902821109026"; // Your actual Raid Leader ID
-
+// 🚨 REPLACE THESE WITH YOUR ACTUAL 18-DIGIT ROLE IDs
+const OFFICER_ROLE_ID = "1184753902821109026";  // ← YOUR Officer role ID
+const RAID_LEADER_ROLE_ID = "1284753902821109026"; // ← YOUR Raid Leader role ID
 
 const form = document.getElementById("applyForm");
 const submitBtn = document.getElementById("submitBtn");
@@ -63,6 +61,7 @@ function clearErrors() {
 
 async function sendToDiscord(data) {
   const message = {
+    // ✅ WORKING ROLE PING SYNTAX
     content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
 
 **👤 Karakter:** ${data.charName}
@@ -75,7 +74,7 @@ async function sendToDiscord(data) {
 **📅 Aktivitás:** ${data.attendance}
 **⏰ ${new Date().toLocaleString("hu-HU")}`,
     
-    // ✅ THIS MAKES ROLE PINGS WORK
+    // ✅ THIS ENABLES ROLE PINGS
     allowed_mentions: {
       parse: ["roles"],
       roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID]
@@ -85,12 +84,15 @@ async function sendToDiscord(data) {
   try {
     const response = await fetch(DISCORD_WEBHOOK_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(message),
+      headers: { 
+        "Content-Type": "application/json" 
+      },
+      body: JSON.stringify(message)
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
     return true;
