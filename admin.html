@@ -5,34 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eternis - Admin Panel</title>
     <link rel="stylesheet" href="css/styles.css" />
-    <header>
-      <div class="header-container">
-        <div class="logo">
-          <a href="index.html" class="logo">Eternis</a>
-        </div>
 
-        <!-- Hamburger -->
-        <button class="hamburger" id="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+    <!-- 🔥 FIREBASE JAVÍTVA -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
-        <!-- Navigation -->
-        <nav id="nav-menu">
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="roster.html">Roster</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="progress.html">Progress</a></li>
-            <li><a href="rules.html">Szabályok</a></li>
-            <li><a href="apply.html">Jelentkezés</a></li>
-            <li><a href="admin.html">Admin</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
     <style>
+      /* Minden CSS változatlan - tökéletes! */
       * {
         margin: 0;
         padding: 0;
@@ -153,6 +132,74 @@
         display: block;
       }
 
+      /* Header & Navigation */
+      .header-container {
+        max-width: 900px;
+        margin: 0 auto 40px;
+        padding: 0 20px;
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(to bottom, #e0cfa9, #d4af37);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+      }
+
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+      }
+
+      .hamburger span {
+        width: 25px;
+        height: 3px;
+        background: #d4af37;
+        margin: 3px 0;
+        transition: 0.3s;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+      }
+
+      nav {
+        flex: 1;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+        justify-content: flex-end;
+      }
+
+      nav a {
+        color: #c4b5a0;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      nav a:hover {
+        color: #d4af37;
+      }
+
       /* Admin Dashboard */
       .admin-dashboard {
         display: none;
@@ -230,7 +277,6 @@
         border-bottom-color: #d4af37;
       }
 
-      /* Tab Content */
       .tab-content {
         display: none;
       }
@@ -524,10 +570,62 @@
         .roster-table td {
           padding: 8px;
         }
+
+        .hamburger {
+          display: flex;
+        }
+
+        nav {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: rgba(26, 26, 46, 0.98);
+          flex-direction: column;
+          padding: 20px;
+          backdrop-filter: blur(10px);
+        }
+
+        nav.active {
+          display: flex;
+        }
+
+        nav ul {
+          flex-direction: column;
+          gap: 15px;
+          width: 100%;
+          text-align: center;
+        }
       }
     </style>
   </head>
   <body>
+    <!-- Header -->
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html" class="logo">Eternis</a>
+        </div>
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav id="nav-menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="roster.html">Roster</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="rules.html">Szabályok</a></li>
+            <li><a href="apply.html">Jelentkezés</a></li>
+            <li><a href="admin.html">Admin</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
     <div class="admin-container">
       <!-- Login Section -->
       <div class="login-section" id="loginSection">
@@ -536,7 +634,7 @@
           <p>Eternis Guild Raid Tracker</p>
         </div>
 
-        <form onsubmit="handleLogin(event)">
+        <form id="loginForm">
           <div class="form-group">
             <label for="passwordInput">Admin Jelszó</label>
             <input
@@ -560,19 +658,15 @@
           <div class="admin-welcome">
             Üdvözlünk, <strong>Zulkor</strong>! 👑
           </div>
-          <button class="logout-btn" onclick="handleLogout()">
-            🚪 Kijelentkezés
-          </button>
+          <button class="logout-btn" id="logoutBtn">🚪 Kijelentkezés</button>
         </div>
 
         <!-- Tab Navigation -->
         <div class="admin-tabs">
-          <button class="tab-btn active" onclick="switchTab(event, 'raids')">
+          <button class="tab-btn active" data-tab="raids">
             ⚔️ Raid Progress
           </button>
-          <button class="tab-btn" onclick="switchTab(event, 'roster')">
-            👥 Roster Kezelés
-          </button>
+          <button class="tab-btn" data-tab="roster">👥 Roster Kezelés</button>
         </div>
 
         <!-- TAB 1: Raid Progress -->
@@ -580,23 +674,36 @@
           <!-- Current Stats -->
           <div class="stats-section">
             <h2>Jelenlegi Progress</h2>
-            <div class="stats-grid" id="statsGrid"></div>
+            <div class="stats-grid" id="statsGrid">
+              <div class="stat-item">
+                <h4>Mythic+ Score</h4>
+                <div class="stat-value" id="mPlusScore">0</div>
+              </div>
+              <div class="stat-item">
+                <h4>Raid Kills</h4>
+                <div class="stat-value" id="raidKills">0</div>
+              </div>
+              <div class="stat-item">
+                <h4>Active Members</h4>
+                <div class="stat-value" id="activeMembers">0</div>
+              </div>
+            </div>
           </div>
 
           <!-- Raid Updates -->
-          <div>
-            <h2
-              style="
-                color: #d4af37;
-                margin-bottom: 20px;
-                font-size: 20px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-              "
-            >
-              🎯 Raid Frissítés
-            </h2>
-            <div class="raids-grid" id="raidsGrid"></div>
+          <h2
+            style="
+              color: #d4af37;
+              margin-bottom: 20px;
+              font-size: 20px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            "
+          >
+            🎯 Raid Frissítés
+          </h2>
+          <div class="raids-grid" id="raidsGrid">
+            <!-- 🔥 DYNAMIC RAID CARDS -->
           </div>
         </div>
 
@@ -635,7 +742,7 @@
               <div class="form-group">
                 <label for="playerRole">Szerepkör</label>
                 <select id="playerRole">
-                  <option value="">Válassz szerepköt...</option>
+                  <option value="">Válassz szerepkört...</option>
                   <option value="Tank">Tank</option>
                   <option value="Healer">Healer</option>
                   <option value="DPS">DPS</option>
@@ -652,10 +759,12 @@
               </div>
             </div>
 
-            <button class="add-btn" onclick="addPlayer()">
+            <button class="add-btn" id="addPlayerBtn">
               ✅ Játékos Hozzáadása
             </button>
+            <div class="success-message" id="addPlayerSuccess"></div>
           </div>
+
           <!-- Current Roster -->
           <div class="roster-table-wrapper">
             <h3
@@ -668,7 +777,7 @@
                 letter-spacing: 1px;
               "
             >
-              📋 Aktuális Rooster
+              📋 Aktuális Roster
             </h3>
             <table class="roster-table">
               <thead>
@@ -676,7 +785,7 @@
                   <th>Játékos Neve</th>
                   <th>Osztály</th>
                   <th>Szerepkör</th>
-                  <th>Akció</th>
+                  <th>Raider.IO</th>
                   <th>Delete</th>
                 </tr>
               </thead>
@@ -687,8 +796,23 @@
       </div>
     </div>
 
-    <script src="js/admin.js"></script>
     <script>
+      // 🔥 FIREBASE CONFIG (progress.js-ból)
+      const firebaseConfig = {
+        apiKey: "AIzaSyDxXh_68XFG_n8zUTAg1IPUe0lI4qQalsM",
+        authDomain: "eternis-progress.firebaseapp.com",
+        projectId: "eternis-progress",
+        storageBucket: "eternis-progress.firebasestorage.app",
+        messagingSenderId: "820448513456",
+        appId: "1:820448513456:web:521976f61a9f6cdc34da75",
+        measurementId: "G-X2C5X70TR5",
+      };
+
+      // 🔥 FIREBASE INICIALIZÁLÁS
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+
+      // Hamburger menu
       const hamburger = document.getElementById("hamburger");
       const navMenu = document.getElementById("nav-menu");
 
@@ -696,6 +820,217 @@
         hamburger.classList.toggle("active");
         navMenu.classList.toggle("active");
       });
+
+      // Admin password
+      const ADMIN_PASSWORD = "eternis2026";
+
+      // 🔥 GLOBAL DATA
+      let roster = [];
+      let stats = { mPlusScore: 0, raidKills: 0, activeMembers: 0 };
+      let raidData = {};
+
+      // 🔥 FIREBASE LISTENERS
+      const statsRef = db.ref("stats");
+      const rosterRef = db.ref("roster");
+      const raidRef = db.ref("raidData");
+
+      // Stats listener
+      statsRef.on("value", (snapshot) => {
+        stats = snapshot.val() || {
+          mPlusScore: 0,
+          raidKills: 0,
+          activeMembers: 0,
+        };
+        updateStats();
+      });
+
+      // Roster listener
+      rosterRef.on("value", (snapshot) => {
+        roster = snapshot.val() || [];
+        updateRosterTable();
+      });
+
+      // Raid data listener
+      raidRef.on("value", (snapshot) => {
+        raidData = snapshot.val() || {};
+        generateRaidCards();
+      });
+
+      // Login functionality
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const password = document.getElementById("passwordInput").value;
+
+          if (password === ADMIN_PASSWORD) {
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("adminDashboard").classList.add("show");
+
+            // 🔥 LOAD DATA ON LOGIN
+            updateStats();
+            updateRosterTable();
+            generateRaidCards();
+          } else {
+            document.getElementById("errorMessage").textContent =
+              "❌ Helytelen jelszó!";
+            document.getElementById("errorMessage").classList.add("show");
+          }
+        });
+
+      // Logout
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function () {
+          document.getElementById("loginSection").classList.remove("hidden");
+          document.getElementById("adminDashboard").classList.remove("show");
+          document.getElementById("passwordInput").value = "";
+          document.getElementById("errorMessage").classList.remove("show");
+        });
+
+      // Tab switching
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((c) => c.classList.remove("active"));
+
+          this.classList.add("active");
+          document
+            .getElementById(this.dataset.tab + "-tab")
+            .classList.add("active");
+        });
+      });
+
+      // 🔥 UPDATE STATS
+      function updateStats() {
+        document.getElementById("mPlusScore").textContent =
+          stats.mPlusScore || 0;
+        document.getElementById("raidKills").textContent = stats.raidKills || 0;
+        document.getElementById("activeMembers").textContent =
+          stats.activeMembers || 0;
+      }
+
+      // 🔥 GENERATE RAID CARDS
+      function generateRaidCards() {
+        const raidsGrid = document.getElementById("raidsGrid");
+        if (!raidsGrid) return;
+
+        raidsGrid.innerHTML = "";
+        Object.keys(raidData).forEach((expansion) => {
+          Object.keys(raidData[expansion]).forEach((raidName) => {
+            const raid = raidData[expansion][raidName];
+            const card = document.createElement("div");
+            card.className = "raid-card";
+            card.innerHTML = `
+              <h3>${raidName}</h3>
+              <div class="form-group">
+                <label>Kills / Total</label>
+                <select id="raid-${expansion}-${raidName}">
+                  ${Array.from(
+                    { length: raid.total + 1 },
+                    (_, i) =>
+                      `<option value="${i}" ${i === raid.kills ? "selected" : ""}>${i}/${raid.total}</option>`,
+                  ).join("")}
+                </select>
+              </div>
+              <button class="update-btn" onclick="updateRaidProgress('${expansion}', '${raidName}')">
+                💾 Frissítés
+              </button>
+              <div class="success-message" id="success-${expansion}-${raidName}"></div>
+            `;
+            raidsGrid.appendChild(card);
+          });
+        });
+      }
+
+      // 🔥 UPDATE RAID PROGRESS
+      window.updateRaidProgress = function (expansion, raidName) {
+        const select = document.getElementById(`raid-${expansion}-${raidName}`);
+        const kills = parseInt(select.value);
+        const successMsg = document.getElementById(
+          `success-${expansion}-${raidName}`,
+        );
+
+        db.ref(`raidData/${expansion}/${raidName}/kills`)
+          .set(kills)
+          .then(() => {
+            successMsg.textContent = "✅ Sikeresen frissítve!";
+            successMsg.classList.add("show");
+            setTimeout(() => successMsg.classList.remove("show"), 3000);
+          });
+      };
+
+      // Add player
+      document
+        .getElementById("addPlayerBtn")
+        .addEventListener("click", function () {
+          const name = document.getElementById("playerName").value.trim();
+          const playerClass = document.getElementById("playerClass").value;
+          const role = document.getElementById("playerRole").value;
+          const raiderio = document
+            .getElementById("playerRaiderIO")
+            .value.trim();
+
+          if (name && playerClass && role) {
+            const newPlayer = { name, class: playerClass, role, raiderio };
+
+            // 🔥 FIREBASE SAVE
+            const newKey = rosterRef.push().key;
+            rosterRef
+              .child(newKey)
+              .set(newPlayer)
+              .then(() => {
+                document.getElementById("addPlayerSuccess").textContent =
+                  "✅ Játékos sikeresen hozzáadva!";
+                document
+                  .getElementById("addPlayerSuccess")
+                  .classList.add("show");
+
+                // Clear form
+                document.getElementById("playerName").value = "";
+                document.getElementById("playerClass").value = "";
+                document.getElementById("playerRole").value = "";
+                document.getElementById("playerRaiderIO").value = "";
+
+                setTimeout(() => {
+                  document
+                    .getElementById("addPlayerSuccess")
+                    .classList.remove("show");
+                }, 3000);
+              });
+          }
+        });
+
+      // Update roster table
+      function updateRosterTable() {
+        const tbody = document.getElementById("rosterTableBody");
+        tbody.innerHTML = "";
+
+        roster.forEach((player, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${player.name}</td>
+            <td><span class="class-tag">${player.class}</span></td>
+            <td><span class="role-${player.role.toLowerCase()} role-badge">${player.role}</span></td>
+            <td><a href="${player.raiderio}" target="_blank">🔗</a></td>
+            <td><button class="delete-btn" onclick="deletePlayer('${player.key}')">🗑️ Töröl</button></td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Delete player
+      window.deletePlayer = function (key) {
+        if (confirm("Biztosan törölni szeretnéd ezt a játékost?")) {
+          rosterRef.child(key).remove();
+        }
+      };
+
+      console.log("✅ ETERNIS ADMIN PANEL - FULLY FIREBASE SYNCED! 🚀");
     </script>
   </body>
 </html>

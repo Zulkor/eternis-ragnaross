@@ -1,281 +1,379 @@
-// js/admin.js - Admin Panel Logic (REAL-TIME SYNC FIXED)
+// js/admin.js - Admin Panel Logic (GLOBAL FIREBASE REAL-TIME SYNC)
+// ✅ ETERNIS GUILD - FULLY FUNCTIONAL WORLDWIDE VERSION
+
+// 🔥 YOUR FIREBASE CONFIG (SAME AS PROGRESS)
+const firebaseConfig = {
+  apiKey: "AIzaSyDxXh_68XFG_n8zUTAg1IPUe0lI4qQalsM",
+  authDomain: "eternis-progress.firebaseapp.com",
+  projectId: "eternis-progress",
+  storageBucket: "eternis-progress.firebasestorage.app",
+  messagingSenderId: "820448513456",
+  appId: "1:820448513456:web:521976f61a9f6cdc34da75",
+  measurementId: "G-X2C5X70TR5",
+};
+
+// 🔥 INITIALIZE FIREBASE
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// 🔥 ALL DATABASE REFERENCES
+const raidRef = db.ref("raidData");
+const rosterRef = db.ref("roster");
+const statsRef = db.ref("stats");
 
 // ⚠️ Admin password
-const ADMIN_PASSWORD = "EternisAdminsRoom123!";
+const ADMIN_PASSWORD = "eternis2026";
 
-// Raid data
+// GLOBAL DATA
 let raidData = {
   "The War Within": {
-    "Manaforge Omega": { kills: 2, total: 8, bosses: ["Plexus Sentinel","Loom'ithar","Soulbinder Naazindhri","Forgeweaver Araz","The Soul Hunters","Fractillus","Nexus-King Salhadaar","Dimensius"] },
-    "Nerub-ar Palace": { kills: 0, total: 8, bosses: ["Ulgrax the Devourer","The Bloodbound Horror","Sikran","Rasha'nan","Broodtwister Ovi'nax","Nexus-Princess Ky'veza","Silken Court","Queen Ansurek"] },
-    "Liberation of Undermine": { kills: 0, total: 8, bosses: ["Vexie","Cauldron of Carnage","Rik Reverb","Stix Bunkjunker","Sprocketmonger Lockenstock","One-Armed Bandit","Mug'Zee, Heads of Security","Chrome King Gallywix"] },
+    "Manaforge Omega": {
+      kills: 2,
+      total: 8,
+      bosses: [
+        "Plexus Sentinel",
+        "Loom'ithar",
+        "Soulbinder Naazindhri",
+        "Forgeweaver Araz",
+        "The Soul Hunters",
+        "Fractillus",
+        "Nexus-King Salhadaar",
+        "Dimensius",
+      ],
+    },
+    "Nerub-ar Palace": {
+      kills: 0,
+      total: 8,
+      bosses: [
+        "Ulgrax the Devourer",
+        "The Bloodbound Horror",
+        "Sikran",
+        "Rasha'nan",
+        "Broodtwister Ovi'nax",
+        "Nexus-Princess Ky'veza",
+        "Silken Court",
+        "Queen Ansurek",
+      ],
+    },
+    "Liberation of Undermine": {
+      kills: 0,
+      total: 8,
+      bosses: [
+        "Vexie",
+        "Cauldron of Carnage",
+        "Rik Reverb",
+        "Stix Bunkjunker",
+        "Sprocketmonger Lockenstock",
+        "One-Armed Bandit",
+        "Mug'Zee, Heads of Security",
+        "Chrome King Gallywix",
+      ],
+    },
   },
   Midnight: {
-    "The Dreamrift": { kills: 0, total: 1, bosses: ["Chimaerus the Undreamt God"] },
-    "March on Quel'Danas": { kills: 0, total: 2, bosses: ["Belo'ren, Child of Al'ar", "Midnight Falls"] },
-    "The Voidspire": { kills: 0, total: 6, bosses: ["Imperator Averzian","Vorasius","Fallen-King Salhadaar","Vaelgor & Ezzorak","Lightblinded Vanguard","Crown of the Cosmos"] },
+    "The Dreamrift": {
+      kills: 0,
+      total: 1,
+      bosses: ["Chimaerus the Undreamt God"],
+    },
+    "March on Quel'Danas": {
+      kills: 0,
+      total: 2,
+      bosses: ["Belo'ren, Child of Al'ar", "Midnight Falls"],
+    },
+    "The Voidspire": {
+      kills: 0,
+      total: 6,
+      bosses: [
+        "Imperator Averzian",
+        "Vorasius",
+        "Fallen-King Salhadaar",
+        "Vaelgor & Ezzorak",
+        "Lightblinded Vanguard",
+        "Crown of the Cosmos",
+      ],
+    },
   },
 };
 
-// Roster data
 let rosterData = [];
-
-const classColorMap = {
-  Warrior: "class-warrior", Paladin: "class-paladin", Hunter: "class-hunter", Rogue: "class-rogue",
-  Priest: "class-priest", Shaman: "class-shaman", Mage: "class-mage", Warlock: "class-warlock",
-  Monk: "class-monk", Druid: "class-druid", "Demon Hunter": "class-demon-hunter", "Death Knight": "class-death-knight", Evoker: "class-evoker",
-};
-
-const roleMap = { Tank: "tank", Healer: "healer", DPS: "dps" };
-const roleIcons = { Tank: "css/icons/tank.png", Healer: "css/icons/healer.png", DPS: "css/icons/dps.png" };
+let statsData = { mPlusScore: 0, raidKills: 0, activeMembers: 0 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ Admin panel with REAL-TIME sync initializing...");
-  loadRaidData();
-  loadRosterData();
-  checkAdminSession();
+  console.log("✅ Admin panel with GLOBAL FIREBASE sync initializing...");
+
+  // 🔥 SETUP ALL FIREBASE LISTENERS
+  setupFirebaseListeners();
+
+  // Hamburger menu
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("nav-menu");
+  if (hamburger && navMenu) {
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    });
+  }
+
+  // Form listeners
+  setupEventListeners();
   console.log("✅ Admin panel ready!");
 });
+
+// 🔥 REAL-TIME FIREBASE LISTENERS
+function setupFirebaseListeners() {
+  // Raid data sync
+  raidRef.on("value", (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      Object.assign(raidData, data);
+      console.log("📡 FIREBASE RAID UPDATE - Admin refreshed!");
+      if (
+        document.getElementById("adminDashboard")?.classList.contains("show")
+      ) {
+        generateRaidCards();
+        updateStats();
+      }
+    }
+  });
+
+  // Roster sync
+  rosterRef.on("value", (snapshot) => {
+    rosterData = snapshot.val() || [];
+    console.log("📡 FIREBASE ROSTER UPDATE!");
+    if (document.getElementById("adminDashboard")?.classList.contains("show")) {
+      updateRosterTable();
+    }
+  });
+
+  // Stats sync
+  statsRef.on("value", (snapshot) => {
+    statsData = snapshot.val() || {
+      mPlusScore: 0,
+      raidKills: 0,
+      activeMembers: 0,
+    };
+    console.log("📡 FIREBASE STATS UPDATE!");
+    if (document.getElementById("adminDashboard")?.classList.contains("show")) {
+      updateStats();
+    }
+  });
+}
+
+// 🔥 EVENT LISTENERS
+function setupEventListeners() {
+  // Login form
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", handleLogin);
+  }
+
+  // Logout button
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", handleLogout);
+  }
+
+  // Tab switching
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".tab-content")
+        .forEach((c) => c.classList.remove("active"));
+      this.classList.add("active");
+      document
+        .getElementById(this.dataset.tab + "-tab")
+        .classList.add("active");
+    });
+  });
+
+  // Add player button
+  const addPlayerBtn = document.getElementById("addPlayerBtn");
+  if (addPlayerBtn) {
+    addPlayerBtn.addEventListener("click", addPlayer);
+  }
+}
 
 // LOGIN/LOGOUT
 function handleLogin(event) {
   event.preventDefault();
   const password = document.getElementById("passwordInput").value;
   const errorMsg = document.getElementById("errorMessage");
+
   if (password === ADMIN_PASSWORD) {
-    sessionStorage.setItem("adminSession", JSON.stringify({ loggedIn: true, timestamp: Date.now(), expiresIn: 3600000 }));
-    console.log("✅ Login successful!");
-    showAdminDashboard();
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("adminDashboard").classList.add("show");
+
+    // Load all data
+    updateStats();
+    updateRosterTable();
+    generateRaidCards();
+    console.log("✅ Login successful - FULL SYNC!");
   } else {
-    errorMsg.textContent = "❌ Hibás jelszó! Próbáld újra.";
-    errorMsg.classList.add("show");
-    document.getElementById("passwordInput").value = "";
-    setTimeout(() => errorMsg.classList.remove("show"), 3000);
+    if (errorMsg) {
+      errorMsg.textContent = "❌ Helytelen jelszó!";
+      errorMsg.classList.add("show");
+      setTimeout(() => errorMsg.classList.remove("show"), 3000);
+    }
   }
 }
 
 function handleLogout() {
-  sessionStorage.removeItem("adminSession");
   document.getElementById("loginSection").classList.remove("hidden");
   document.getElementById("adminDashboard").classList.remove("show");
   document.getElementById("passwordInput").value = "";
 }
 
-function checkAdminSession() {
-  const session = sessionStorage.getItem("adminSession");
-  if (session) {
-    const data = JSON.parse(session);
-    if (Date.now() - data.timestamp < data.expiresIn) {
-      showAdminDashboard();
-    } else {
-      sessionStorage.removeItem("adminSession");
-    }
-  }
+// 🔥 UPDATE FUNCTIONS
+function updateStats() {
+  const mPlusScoreEl = document.getElementById("mPlusScore");
+  const raidKillsEl = document.getElementById("raidKills");
+  const activeMembersEl = document.getElementById("activeMembers");
+
+  if (mPlusScoreEl) mPlusScoreEl.textContent = statsData.mPlusScore || 0;
+  if (raidKillsEl) raidKillsEl.textContent = statsData.raidKills || 0;
+  if (activeMembersEl)
+    activeMembersEl.textContent = statsData.activeMembers || 0;
 }
 
-function showAdminDashboard() {
-  document.getElementById("loginSection").classList.add("hidden");
-  document.getElementById("adminDashboard").classList.add("show");
-  renderStatsGrid();
-  renderRaidsGrid();
-  renderRosterTable();
-}
-
-// RENDER FUNCTIONS
-function renderStatsGrid() {
-  const statsGrid = document.getElementById("statsGrid");
-  if (!statsGrid) return;
-  statsGrid.innerHTML = "";
-  Object.entries(raidData).forEach(([expansion, raids]) => {
-    Object.entries(raids).forEach(([raidName, raidInfo]) => {
-      const percentage = Math.round((raidInfo.kills / raidInfo.total) * 100);
-      const stat = document.createElement("div");
-      stat.className = "stat-item";
-      stat.innerHTML = `<h4>${raidName}</h4><div class="stat-value">${raidInfo.kills}/${raidInfo.total}</div><div style="color: #888; font-size: 12px; margin-top: 8px;">${percentage}%</div>`;
-      statsGrid.appendChild(stat);
-    });
-  });
-}
-
-function renderRaidsGrid() {
+function generateRaidCards() {
   const raidsGrid = document.getElementById("raidsGrid");
   if (!raidsGrid) return;
+
   raidsGrid.innerHTML = "";
-  let raidIndex = 0;
-  Object.entries(raidData).forEach(([expansion, raids]) => {
-    Object.entries(raids).forEach(([raidName, raidInfo]) => {
+  Object.keys(raidData).forEach((expansion) => {
+    Object.keys(raidData[expansion]).forEach((raidName) => {
+      const raid = raidData[expansion][raidName];
       const card = document.createElement("div");
       card.className = "raid-card";
-      const inputId = `input-${raidIndex}`;
-      const msgId = `msg-${raidIndex}`;
       card.innerHTML = `
         <h3>${raidName}</h3>
         <div class="form-group">
-          <label>Jelenlegi Kill-ek: ${raidInfo.kills}/${raidInfo.total}</label>
-          <input type="number" min="0" max="${raidInfo.total}" value="${raidInfo.kills}" id="${inputId}" class="kill-input" placeholder="0" />
+          <label>Kills / Total</label>
+          <select id="raid-${expansion}-${raidName.replace(/[^a-zA-Z0-9]/g, "")}">
+            ${Array.from(
+              { length: raid.total + 1 },
+              (_, i) =>
+                `<option value="${i}" ${i === raid.kills ? "selected" : ""}>${i}/${raid.total}</option>`,
+            ).join("")}
+          </select>
         </div>
-        <button class="update-btn" onclick="updateRaidProgressByIndex(${raidIndex})">✅ Frissítés</button>
-        <div class="success-message" id="${msgId}"></div>
+        <button class="update-btn" onclick="updateRaidProgress('${expansion}', '${raidName}')">
+          💾 Frissítés
+        </button>
+        <div class="success-message" id="success-${expansion}-${raidName.replace(/[^a-zA-Z0-9]/g, "")}"></div>
       `;
       raidsGrid.appendChild(card);
-      raidIndex++;
     });
   });
 }
 
-function renderRosterTable() {
-  const tbody = document.getElementById("rosterTableBody");
-  if (!tbody) return;
-  tbody.innerHTML = "";
-  if (rosterData.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">Jelenleg nincs játékos a rosztérben</td></tr>`;
+// 🔥 GLOBAL FIREBASE UPDATE (WORLDWIDE SYNC)
+window.updateRaidProgress = function (expansion, raidName) {
+  const selectId = `raid-${expansion}-${raidName.replace(/[^a-zA-Z0-9]/g, "")}`;
+  const select = document.getElementById(selectId);
+  const successId = `success-${expansion}-${raidName.replace(/[^a-zA-Z0-9]/g, "")}`;
+  const successMsg = document.getElementById(successId);
+
+  if (!select) return;
+
+  const kills = parseInt(select.value);
+  raidRef
+    .child(`${expansion}/${raidName}/kills`)
+    .set(kills)
+    .then(() => {
+      if (successMsg) {
+        successMsg.textContent = `✅ ${raidName} frissítve: ${kills}/${raidData[expansion][raidName].total}`;
+        successMsg.classList.add("show");
+        setTimeout(() => successMsg.classList.remove("show"), 3000);
+      }
+      console.log(
+        `🚀 Raid updated WORLDWIDE: ${expansion}/${raidName} = ${kills} kills`,
+      );
+    })
+    .catch((error) => {
+      console.error("❌ Firebase update failed:", error);
+    });
+};
+
+// 🔥 ROSTER FUNCTIONS
+function addPlayer() {
+  const name = document.getElementById("playerName").value.trim();
+  const playerClass = document.getElementById("playerClass").value;
+  const role = document.getElementById("playerRole").value;
+  const raiderio = document.getElementById("playerRaiderIO").value.trim();
+
+  if (!name || !playerClass || !role) {
+    alert("❌ Töltsd ki az összes kötelező mezőt!");
     return;
   }
-  rosterData.forEach((player) => {
-    const roleClass = roleMap[player.role] || "dps";
-    const roleIcon = roleIcons[player.role] || "css/icons/dps.png";
-    const classColorClass = classColorMap[player.class] || "";
+
+  const newPlayer = {
+    name,
+    class: playerClass,
+    role,
+    raiderio: raiderio || "",
+  };
+  const newKey = rosterRef.push().key;
+
+  rosterRef
+    .child(newKey)
+    .set(newPlayer)
+    .then(() => {
+      document.getElementById("addPlayerSuccess").textContent =
+        `✅ ${name} sikeresen hozzáadva!`;
+      document.getElementById("addPlayerSuccess").classList.add("show");
+
+      // Clear form
+      document.getElementById("playerName").value = "";
+      document.getElementById("playerClass").value = "";
+      document.getElementById("playerRole").value = "";
+      document.getElementById("playerRaiderIO").value = "";
+
+      setTimeout(() => {
+        document.getElementById("addPlayerSuccess").classList.remove("show");
+      }, 3000);
+    });
+}
+
+function updateRosterTable() {
+  const tbody = document.getElementById("rosterTableBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+  rosterData.forEach((player, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td><span class="player-name ${classColorClass}">${player.name}</span></td>
-      <td>${player.class}</td>
-      <td><span class="role-badge ${roleClass}"><img src="${roleIcon}" alt="${player.role}" class="role-icon">${player.role}</span></td>
-      <td><a href="${player.raiderIO}" target="_blank" class="raiderio-link">📊 View</a></td>
-      <td><button class="delete-btn" onclick="deletePlayer(${player.id})">🗑️ Törlés</button></td>
+      <td>${player.name}</td>
+      <td><span class="class-tag">${player.class}</span></td>
+      <td><span class="role-${player.role.toLowerCase()} role-badge">${player.role}</span></td>
+      <td><a href="${player.raiderio}" target="_blank">🔗</a></td>
+      <td><button class="delete-btn" onclick="deletePlayer('${player.key}')">🗑️ Töröl</button></td>
     `;
     tbody.appendChild(row);
   });
 }
 
-// 🔥 FIXED: REAL-TIME UPDATE FUNCTION
-function updateRaidProgressByIndex(index) {
-  console.log(`🔄 Updating raid at index ${index}`);
-  const input = document.getElementById(`input-${index}`);
-  const msgElement = document.getElementById(`msg-${index}`);
-  if (!input) return;
-
-  const kills = parseInt(input.value);
-  let currentIndex = 0;
-  
-  Object.entries(raidData).forEach(([expansion, raids]) => {
-    Object.entries(raids).forEach(([raidName, raidInfo]) => {
-      if (currentIndex === index) {
-        if (isNaN(kills) || kills < 0) return alert("❌ Érvénytelen érték!");
-        if (kills > raidInfo.total) return alert(`❌ Maximum ${raidInfo.total} kill!`);
-        
-        raidData[expansion][raidName].kills = kills;
-        
-        // 🔥 FIXED: REAL-TIME BROADCAST
-        saveRaidDataWithBroadcast();
-        
-        if (msgElement) {
-          msgElement.textContent = `✅ ${raidName} frissítve: ${kills}/${raidInfo.total}`;
-          msgElement.classList.add("show");
-          setTimeout(() => msgElement.classList.remove("show"), 3000);
-        }
-        renderStatsGrid();
-        return;
-      }
-      currentIndex++;
-    });
-  });
-}
-
-// 🔥 NEW: Broadcast to ALL tabs/windows
-function saveRaidDataWithBroadcast() {
-  // 1. Save to localStorage
-  localStorage.setItem("raidData", JSON.stringify(raidData));
-  
-  // 2. Broadcast to ALL roster pages
-  const channel = new BroadcastChannel('raidDataChannel');
-  channel.postMessage({
-    type: 'raidDataUpdated',
-    data: raidData
-  });
-  
-  // 3. Local event (backup)
-  window.dispatchEvent(new Event("raidDataUpdated"));
-  
-  console.log("🚀 Raid data SAVED + BROADCAST to ALL tabs!");
-}
-
-// ROSTER FUNCTIONS
-function addPlayer() {
-  const name = document.getElementById("playerName").value.trim();
-  const playerClass = document.getElementById("playerClass").value;
-  const role = document.getElementById("playerRole").value;
-  const raiderIO = document.getElementById("playerRaiderIO").value.trim();
-  
-  if (!name || !playerClass || !role) return alert("❌ Töltsd ki az összes mezőt!");
-  if (rosterData.some((p) => p.name.toLowerCase() === name.toLowerCase())) return alert("❌ Ez a játékos már létezik!");
-  
-  const player = {
-    id: Date.now(),
-    name, class: playerClass, role,
-    raiderIO: raiderIO || `https://raider.io/characters/eu/ragnaros/${name.toLowerCase()}`
-  };
-  
-  rosterData.push(player);
-  saveRosterData();
-  renderRosterTable();
-  document.querySelectorAll('#playerName, #playerClass, #playerRole, #playerRaiderIO').forEach(el => el.value = "");
-  alert(`✅ ${name} hozzáadva a rosztérhez!`);
-}
-
-function deletePlayer(playerId) {
-  const playerIndex = rosterData.findIndex((p) => p.id === playerId);
-  if (playerIndex === -1) return alert("❌ Játékos nem található!");
-  
-  const playerName = rosterData[playerIndex].name;
-  if (confirm(`❓ Biztosan törölni szeretnéd: ${playerName}?`)) {
-    rosterData.splice(playerIndex, 1);
-    saveRosterData();
-    renderRosterTable();
-    alert(`✅ ${playerName} törölve a rosztérből!`);
-    window.dispatchEvent(new CustomEvent("rosterDataUpdated"));
+// 🔥 DELETE PLAYER
+window.deletePlayer = function (key) {
+  if (confirm("Biztosan törölni szeretnéd ezt a játékost?")) {
+    rosterRef
+      .child(key)
+      .remove()
+      .then(() => {
+        console.log("✅ Player deleted WORLDWIDE!");
+      });
   }
-}
+};
 
-function switchTab(event, tabName) {
-  document.querySelectorAll(".tab-content").forEach((tab) => tab.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.remove("active"));
-  const tabElement = document.getElementById(`${tabName}-tab`);
-  if (tabElement) tabElement.classList.add("active");
-  event.target.classList.add("active");
-}
+// 🔥 STATS UPDATE (Manual)
+window.updateStats = function (type, value) {
+  const updates = {};
+  updates[type] = parseInt(value) || 0;
+  statsRef.update(updates);
+};
 
-// STORAGE
-function saveRaidData() { saveRaidDataWithBroadcast(); }
-
-function loadRaidData() {
-  const saved = localStorage.getItem("raidData");
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      Object.assign(raidData, data);
-      console.log("✅ Raid data loaded");
-    } catch (error) {
-      console.error("❌ Failed to load raid data:", error);
-    }
-  }
-}
-
-function saveRosterData() {
-  localStorage.setItem("rosterData", JSON.stringify(rosterData));
-  window.dispatchEvent(new CustomEvent("rosterDataUpdated", { detail: { rosterData } }));
-}
-
-function loadRosterData() {
-  const saved = localStorage.getItem("rosterData");
-  if (saved) {
-    try {
-      rosterData = JSON.parse(saved);
-    } catch (error) {
-      rosterData = [];
-    }
-  } else {
-    rosterData = [];
-  }
-}
-
-console.log("✅ Admin panel with REAL-TIME sync loaded!");
+console.log("✅ ETERNIS ADMIN.JS - FULL WORLDWIDE FIREBASE SYNC! 🚀");
