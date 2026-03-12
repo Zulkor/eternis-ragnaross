@@ -22,7 +22,7 @@ const rosterRef = db.ref("roster");
 const statsRef = db.ref("stats");
 
 // ⚠️ Admin password
-const ADMIN_PASSWORD = "eternis2026";
+const ADMIN_PASSWORD = "EternisAdminsRoom123!";
 
 // GLOBAL DATA
 let raidData = {
