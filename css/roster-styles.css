@@ -1,0 +1,320 @@
+/* ============ ROSTER HERO SECTION ============ */
+.roster-hero {
+  position: relative;
+  padding: 60px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 25, 15, 0.6) 0%,
+    rgba(45, 30, 20, 0.55) 100%
+  );
+}
+
+.roster-hero-overlay {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.roster-hero-content {
+  text-align: center;
+  margin-bottom: 50px;
+  animation: slideUp 0.8s ease-out;
+}
+
+.roster-hero-content h1 {
+  font-size: 56px;
+  color: #d4af37;
+  margin-bottom: 15px;
+  text-shadow:
+    0 0 30px rgba(212, 175, 55, 0.8),
+    0 0 60px rgba(212, 175, 55, 0.4);
+  letter-spacing: 4px;
+  font-weight: 900;
+}
+
+.roster-hero-content p {
+  font-size: 18px;
+  color: #c4b5a0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ============ ROSTER TABLE WRAPPER ============ */
+.roster-table-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+}
+
+.roster-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 25, 15, 0.65) 0%,
+    rgba(28, 18, 10, 0.6) 100%
+  );
+  border: 2px solid #8b6f47;
+  backdrop-filter: blur(10px);
+}
+
+.roster-table thead {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 111, 71, 0.8) 0%,
+    rgba(107, 78, 47, 0.75) 100%
+  );
+  backdrop-filter: blur(8px);
+}
+
+.roster-table th {
+  color: #fff;
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-bottom: 2px solid #d4af37;
+  letter-spacing: 1px;
+  font-size: 13px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.roster-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(139, 111, 71, 0.2);
+  color: #c4b5a0;
+  font-size: 14px;
+}
+
+.roster-table tbody tr:hover {
+  background: rgba(212, 175, 55, 0.06);
+  transition: all 0.3s ease;
+}
+
+.roster-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============ PLAYER NAME COLORS BY CLASS ============ */
+.player-name {
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  font-size: 19px;
+}
+
+.player-name:hover {
+  transform: scale(1.05);
+}
+
+.player-name.class-warrior {
+  color: #c69b7b;
+  text-shadow: 0 0 10px rgba(198, 155, 123, 0.5);
+}
+
+.player-name.class-paladin {
+  color: #f58cba;
+  text-shadow: 0 0 10px rgba(245, 140, 186, 0.5);
+}
+
+.player-name.class-hunter {
+  color: #abd473;
+  text-shadow: 0 0 10px rgba(171, 212, 115, 0.5);
+}
+
+.player-name.class-rogue {
+  color: #fff569;
+  text-shadow: 0 0 10px rgba(255, 245, 105, 0.5);
+}
+
+.player-name.class-priest {
+  color: #e5e5e5;
+  text-shadow: 0 0 10px rgba(229, 229, 229, 0.4);
+}
+
+.player-name.class-death-knight {
+  color: #c41e3a;
+  text-shadow: 0 0 10px rgba(196, 30, 58, 0.5);
+}
+
+.player-name.class-shaman {
+  color: #0070dd;
+  text-shadow: 0 0 10px rgba(0, 112, 221, 0.5);
+}
+
+.player-name.class-mage {
+  color: #69ccf0;
+  text-shadow: 0 0 10px rgba(105, 204, 240, 0.5);
+}
+
+.player-name.class-warlock {
+  color: #9482ca;
+  text-shadow: 0 0 10px rgba(148, 130, 202, 0.5);
+}
+
+.player-name.class-monk {
+  color: #00ff96;
+  text-shadow: 0 0 10px rgba(0, 255, 150, 0.5);
+}
+
+.player-name.class-druid {
+  color: #ff7d0a;
+  text-shadow: 0 0 10px rgba(255, 125, 10, 0.5);
+}
+
+.player-name.class-demon-hunter {
+  color: #a335ee;
+  text-shadow: 0 0 10px rgba(163, 53, 238, 0.5);
+}
+
+.player-name.class-evoker {
+  color: #33937f;
+  text-shadow: 0 0 10px rgba(51, 147, 127, 0.5);
+}
+
+/* ============ ROLE BADGES ============ */
+.role-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 1px solid;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.role-badge.tank {
+  background: rgba(198, 155, 123, 0.15);
+  color: #c69b7b;
+  border-color: #c69b7b;
+  backdrop-filter: blur(5px);
+}
+
+.role-badge.tank:hover {
+  background: rgba(198, 155, 123, 0.3);
+  box-shadow: 0 0 15px rgba(198, 155, 123, 0.4);
+}
+
+.role-badge.dps {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  border-color: #d4af37;
+  backdrop-filter: blur(5px);
+}
+
+.role-badge.dps:hover {
+  background: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.role-badge.healer {
+  background: rgba(245, 140, 186, 0.15);
+  color: #f58cba;
+  border-color: #f58cba;
+  backdrop-filter: blur(5px);
+}
+
+.role-badge.healer:hover {
+  background: rgba(245, 140, 186, 0.3);
+  box-shadow: 0 0 15px rgba(245, 140, 186, 0.4);
+}
+
+/* ============ RAIDER.IO LINK ============ */
+.raiderio-link {
+  color: #d4af37;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 6px 12px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+  background: rgba(212, 175, 55, 0.05);
+  transition: all 0.3s ease;
+  display: inline-block;
+  backdrop-filter: blur(5px);
+}
+
+.raiderio-link:hover {
+  color: #e5c158;
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.15);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+/* ============ STATUS ============ */
+.status-active {
+  color: #d4af37;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.status-inactive {
+  color: #ff6b6b;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .roster-hero-content h1 {
+    font-size: 40px;
+  }
+
+  .roster-hero-content p {
+    font-size: 14px;
+  }
+
+  .roster-table th,
+  .roster-table td {
+    padding: 12px 10px;
+    font-size: 12px;
+  }
+
+  .roster-table th {
+    font-size: 11px;
+  }
+
+  .player-name {
+    padding: 4px 8px;
+    font-size: 13px;
+  }
+
+  .role-badge {
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .roster-hero {
+    padding: 40px 15px;
+  }
+
+  .roster-hero-content h1 {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .roster-table {
+    font-size: 11px;
+  }
+
+  .roster-table th,
+  .roster-table td {
+    padding: 10px 8px;
+  }
+
+  .player-name {
+    padding: 3px 6px;
+    font-size: 12px;
+  }
+
+  .raiderio-link {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}

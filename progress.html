@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eternis - WoW Guild | Raid Progress</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/progress-styles.css" />
+  </head>
+  <body>
+    <div class="bg-wrapper"></div>
+
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html" class="logo">Eternis</a>
+        </div>
+
+        <!-- Hamburger -->
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <!-- Navigation -->
+        <nav id="nav-menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="roster.html">Roster</a></li> -->
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="rules.html">Szabályok</a></li>
+            <li><a href="apply.html">Jelentkezés</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="progress-main">
+      <div class="progress-header">
+        <h1 class="progress-title">Raid Progress</h1>
+        <div class="progress-guild-info">
+          <span>Eternis</span>
+          <span class="separator">•</span>
+          <span>Ragnaros</span>
+        </div>
+      </div>
+
+      <!-- Expansion & Raid Selector -->
+      <div class="progress-filters">
+        <div class="filter-group expansion-group">
+          <button
+            class="filter-btn active"
+            data-expansion="The War Within"
+            onclick="selectExpansion(this)"
+          >
+            The War Within
+          </button>
+          <button
+            class="filter-btn"
+            data-expansion="Midnight"
+            onclick="selectExpansion(this)"
+          >
+            Midnight
+          </button>
+        </div>
+
+        <div class="filter-group raid-group" id="raidGroup">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Progress Stats -->
+      <div class="progress-stats">
+        <h2 id="raidName" class="progress-raid-name">
+          The Dreamrift <span class="mythic-label">MYTHIC</span>
+        </h2>
+        <div class="progress-counter">
+          <span id="killCount" class="kill-count">0</span>
+          <span class="total-count">/<span id="totalCount">1</span>M</span>
+        </div>
+        <div id="progressBar" class="progress-bar">
+          <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Boss Table -->
+      <div class="boss-table-wrapper">
+        <table class="boss-table">
+          <thead>
+            <tr>
+              <th>Boss Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="bossTableBody">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">Eternis</div>
+
+        <div class="footer-links">
+          <a
+            href="https://discord.gg/eternis"
+            class="footer-link"
+            target="_blank"
+            >Discord</a
+          >
+          <a href="apply.html" class="footer-link">Apply</a>
+          <a href="rules.html" class="footer-link">Szabályok</a>
+        </div>
+
+        <div class="footer-info">
+          <p>Mythic raiding guild | CE or bust | Trial applications open</p>
+          <p>WoW The War Within | EU servers</p>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-copyright">
+          © 2026 Eternis Guild. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/progress.js"></script>
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navMenu = document.getElementById("nav-menu");
+
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        navMenu.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eternis - WoW Guild | Jelentkezés</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/apply-styles.css" />
+  </head>
+  <body>
+    <div class="bg-wrapper"></div>
+
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html" class="logo">Eternis</a>
+        </div>
+
+        <!-- Hamburger -->
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <!-- Navigation -->
+        <nav id="nav-menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="roster.html">Roster</a></li> -->
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="progress.html">Progress</a></li>
+            <li><a href="rules.html">Szabályok</a></li>
+            <li><a href="apply.html">Jelentkezés</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="apply-main">
+      <h1 class="apply-title">Jelentkezés</h1>
+
+      <!-- Info Box -->
+      <section class="apply-info-box">
+        <h3>Eternis alkalmazás kérdőív</h3>
+        <p>
+          Köszönjük, hogy érdeklődsz az <strong>Eternis guild</strong> iránt!
+          Kérjük, töltsd ki az alábbi kérdőívet <strong>pontosan</strong>. A
+          kérdések segítségével megismerhetjük a karakteredet, játékstílusodat
+          és a motivációdat a guildhez való csatlakozásra.
+        </p>
+        <p class="apply-info-important">
+          ⚠️ <strong>Fontos:</strong> Kérjük, figyeld a
+          <strong>Discordot</strong>, mert ott fogunk
+          <strong>jelentkezni</strong>!
+        </p>
+      </section>
+
+      <!-- Form Container -->
+      <section class="apply-form-section">
+        <h2>Töltsd ki a kérdőívet</h2>
+
+        <form id="applyForm" class="apply-form">
+          <!-- 1. Character Name -->
+          <div class="form-group">
+            <label for="charName">👤 Karakter neve és szervere:</label>
+            <input
+              type="text"
+              id="charName"
+              name="charName"
+              placeholder="Pl: PlayerCharacter-Ragnaros"
+              required
+            />
+            <span class="error-message" id="charName-error"></span>
+          </div>
+
+          <!-- 2. BattleTag -->
+          <div class="form-group">
+            <label for="btag">⚠️ BattleTag:</label>
+            <input
+              type="text"
+              id="btag"
+              name="btag"
+              placeholder="Pl: Player#1234"
+              required
+            />
+            <span class="error-message" id="btag-error"></span>
+            <small>Pl: Player#1234 formátumban</small>
+          </div>
+
+          <!-- 3. Discord Name -->
+          <div class="form-group">
+            <label for="discord">⚠️ 💬 Discord név:</label>
+            <input
+              type="text"
+              id="discord"
+              name="discord"
+              placeholder="Pl: Player#1234 (ne @-t írj!)"
+              required
+            />
+            <span class="error-message" id="discord-error"></span>
+            <small>❌ Helytelen = nem tudunk felkeresni!</small>
+          </div>
+
+          <!-- 4. WoW Experience -->
+          <div class="form-group">
+            <label for="wowExp"
+              >📋 <strong>1.</strong> Miért szeretnél csatlakozni? CE-k miatt?
+              Mit keresel egy guildben?</label
+            >
+            <textarea
+              id="wowExp"
+              name="wowExp"
+              rows="4"
+              placeholder="Miért pont a Eternis?"
+              required
+            ></textarea>
+          </div>
+
+          <!-- 5. Previous Guilds / Experience -->
+          <div class="form-group">
+            <label for="prevGuilds"
+              >❓ <strong>2.</strong> Korábbi raidelési tapasztalatok:</label
+            >
+            <textarea
+              id="prevGuilds"
+              name="prevGuilds"
+              rows="3"
+              placeholder="Röviden írd le: mióta raidelsz, milyen CE-k, milyen szerepben."
+              required
+            ></textarea>
+          </div>
+
+          <!-- 6. Main Spec -->
+          <div class="form-group">
+            <label for="mainSpec">⚔️ Main spec / off spec & Ilvl?</label>
+            <input
+              type="text"
+              id="mainSpec"
+              name="mainSpec"
+              placeholder="Pl: Resto Shaman Main 635 Ilvl"
+              required
+            />
+          </div>
+
+          <!-- 7. Logs -->
+          <div class="form-group">
+            <label for="logs">📊 Logs link (WarcraftLogs)?</label>
+            <input
+              type="url"
+              id="logs"
+              name="logs"
+              placeholder="https://logs.warcraftlogs.com/..."
+            />
+            <span class="error-message" id="logs-error"></span>
+          </div>
+
+          <!-- 8. Attendance -->
+          <div class="form-group">
+            <label for="attendance"
+              >📅 <strong>3.</strong> Milyen aktivitást várhatunk tőled raid
+              napokon?</label
+            >
+            <textarea
+              id="attendance"
+              name="attendance"
+              rows="3"
+              placeholder="Tudsz-e stabilan részt venni a raidnapokon?"
+              required
+            ></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="apply-button" id="submitBtn">
+            Küldd el a Jelentkezést
+          </button>
+        </form>
+
+        <!-- Success Message (hidden by default) -->
+        <div id="successMessage" class="success-message" style="display: none">
+          <h2>✅ Jelentkezés Elküldve!</h2>
+          <p>Minden adatod megjelent a Discord webhook-on!</p>
+          <p>Várj üzenetet tőlünk!</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">Eternis</div>
+
+        <div class="footer-links">
+          <a
+            href="https://discord.gg/eternis"
+            class="footer-link"
+            target="_blank"
+            >Discord</a
+          >
+          <a href="apply.html" class="footer-link">Apply</a>
+          <a href="rules.html" class="footer-link">Szabályok</a>
+        </div>
+
+        <div class="footer-info">
+          <p>Mythic raiding guild | CE or bust | Trial applications open</p>
+          <p>WoW The War Within | EU servers</p>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-copyright">
+          © 2026 Eternis Guild. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/apply.js"></script>
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navMenu = document.getElementById("nav-menu");
+
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        navMenu.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>
