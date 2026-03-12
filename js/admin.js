@@ -1,7 +1,7 @@
 // js/admin.js - Admin Panel Logic (REAL-TIME SYNC FIXED)
 
 // ⚠️ Admin password
-const ADMIN_PASSWORD = "Manson1994!";
+const ADMIN_PASSWORD = "EternisAdminsRoom123!";
 
 // Raid data
 let raidData = {
