@@ -1,7 +1,7 @@
 // js/admin.js - Admin Panel Logic (PNG Icons verzió)
 
 // ⚠️ Admin jelszó
-const ADMIN_PASSWORD = "Manson1994!";
+const ADMIN_PASSWORD = "EternisAdminsRoom123!";
 
 // Raid adatok
 let raidData = {
