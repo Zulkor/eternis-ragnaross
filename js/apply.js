@@ -1,17 +1,13 @@
-// apply.js - Discord Webhook Form Handler
+// apply.js - Discord Webhook Form Handler (DEBUG MODE)
 
 const DISCORD_WEBHOOK_URL = 
   "https://discord.com/api/webhooks/1462211333763366952/oIXXMuPuas3IcZc26UY02nZEvHadLvqyqGUfpL-7asOQkK2aeeRw_NfR_CoWZnGp5j5c";
-
-// REPLACE THESE WITH YOUR ACTUAL ROLE IDs
-const OFFICER_ROLE_ID = "123456789012345678";  // ← Get from Discord: Right-click Officer role → Copy ID
-const RAID_LEADER_ROLE_ID = "987654321098765432";  // ← Get from Discord: Right-click Raid Leader role → Copy ID
 
 const form = document.getElementById("applyForm");
 const submitBtn = document.getElementById("submitBtn");
 const successMessage = document.getElementById("successMessage");
 
-// Form data object - FIXED FIELD NAMES
+// FIXED: Match your ACTUAL HTML field IDs
 const formData = {
   charName: document.getElementById("charName"),
   btag: document.getElementById("btag"),
@@ -19,138 +15,102 @@ const formData = {
   wowExp: document.getElementById("wowExp"),
   prevGuilds: document.getElementById("prevGuilds"),
   mainSpec: document.getElementById("mainSpec"),
-  raiderIo: document.getElementById("raiderIo"),      // ← FIXED: was "logs"
-  warcraftLogs: document.getElementById("warcraftLogs"), // ← NEW
+  raiderIo: document.getElementById("raiderIo"),     // Must exist in HTML!
   attendance: document.getElementById("attendance"),
 };
 
-// Validation function
+// Test if elements exist
+console.log("Form elements found:", Object.keys(formData).map(key => formData[key] ? "✅" : "❌ " + key));
+
 function validateForm() {
   let isValid = true;
   clearErrors();
 
-  // BattleTag validation (name#1234)
   const btagValue = formData.btag.value.trim();
   if (!btagValue.match(/^[^\s#]+#[0-9]{4,}$/)) {
     showError("btag", "❌ Helytelen BattleTag! (Pl: Player#1234)");
     isValid = false;
   }
 
-  // Discord name validation (not empty, no @)
   const discordValue = formData.discord.value.trim();
   if (!discordValue) {
     showError("discord", "❌ Discord név kötelező!");
     isValid = false;
   } else if (discordValue.includes("@")) {
-    showError(
-      "discord",
-      "❌ Discord név ne tartalmazzon @ jelet! (Pl: Player#1234)",
-    );
-    isValid = false;
-  }
-
-  // Raider.IO URL validation (if provided)
-  const raiderIoValue = formData.raiderIo.value.trim();
-  if (raiderIoValue && !raiderIoValue.includes("raider.io")) {
-    showError("raiderIo", "❌ Érvénytelen Raider.IO link!");
-    isValid = false;
-  }
-
-  // Warcraft Logs URL validation (if provided)
-  const logsValue = formData.warcraftLogs.value.trim();
-  if (logsValue && !logsValue.includes("warcraftlogs.com")) {
-    showError("warcraftLogs", "❌ Érvénytelen WarcraftLogs link!");
+    showError("discord", "❌ Discord név ne tartalmazzon @ jelet!");
     isValid = false;
   }
 
   return isValid;
 }
 
-// Show error message
 function showError(fieldName, message) {
   const errorElement = document.getElementById(`${fieldName}-error`);
   const inputElement = formData[fieldName];
-
-  if (errorElement) {
-    errorElement.textContent = message;
-  }
-  if (inputElement) {
-    inputElement.classList.add("error");
-  }
+  if (errorElement) errorElement.textContent = message;
+  if (inputElement) inputElement.classList.add("error");
 }
 
-// Clear all errors
 function clearErrors() {
   Object.keys(formData).forEach((key) => {
     const errorElement = document.getElementById(`${key}-error`);
-    if (errorElement) {
-      errorElement.textContent = "";
-    }
-    if (formData[key]) {
-      formData[key].classList.remove("error");
-    }
+    if (errorElement) errorElement.textContent = "";
+    if (formData[key]) formData[key].classList.remove("error");
   });
 }
 
-// Send to Discord webhook WITH ROLE PINGS
 async function sendToDiscord(data) {
+  // SIMPLIFIED - NO ROLE PINGS YET (to test if form works)
   const message = {
-    content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
+    content: `**🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
 
-
-**👤 Karakter neve:** ${data.charName}
-**🔗 BattleTag:** ${data.btag}
-**💬 Discord név:** ${data.discord}
+**👤 Karakter:** ${data.charName}
+**🔗 BTag:** ${data.btag}
+**💬 Discord:** ${data.discord}
 **📋 Miért Eternis?:** ${data.wowExp}
-**❓ Korábbi tapasztalat:** ${data.prevGuilds}
-**⚔️ Main spec / Ilvl:** ${data.mainSpec}
-**📊 Raider.IO:** ${data.raiderIo || "Nincs megadva"}
-**📋 Warcraft Logs:** ${data.warcraftLogs || "Nincs megadva"}
-**📅 Raid aktivitás:** ${data.attendance}
-**⏰ Elküldve:** ${new Date().toLocaleString("hu-HU")}`,
-    
-    // PING ONLY SPECIFIC ROLES
-    allowed_mentions: {
-      roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID]
-    }
+**❓ Tapasztalat:** ${data.prevGuilds}
+**⚔️ Spec:** ${data.mainSpec}
+**📊 Raider.IO:** ${data.raiderIo || "Nincs"}
+**📅 Aktivitás:** ${data.attendance}
+**⏰ ${new Date().toLocaleString("hu-HU")}`
   };
 
   try {
+    console.log("🕹️ Sending to Discord...");
     const response = await fetch(DISCORD_WEBHOOK_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(message),
     });
 
+    console.log("📡 Response:", response.status, response.statusText);
+    
     if (!response.ok) {
-      throw new Error(`Discord API hiba: ${response.status}`);
+      const errorText = await response.text();
+      console.error("❌ Discord error:", errorText);
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
     return true;
   } catch (error) {
-    console.error("Webhook küldési hiba:", error);
-    alert("❌ Hiba történt a küldésnél! Próbáld újra.");
+    console.error("💥 Webhook error:", error);
+    alert("❌ Hiba: " + error.message);
     return false;
   }
 }
 
-// Form submit handler
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  console.log("🚀 Form submitted!");
 
-  // Validate form
   if (!validateForm()) {
-    console.log("❌ Form validáció sikertelen");
+    console.log("❌ Validation failed");
     return;
   }
 
-  // Disable button & show loading state
   submitBtn.disabled = true;
   submitBtn.textContent = "Küldés...";
 
-  // Prepare data - FIXED FIELD NAMES
   const data = {
     charName: formData.charName.value.trim(),
     btag: formData.btag.value.trim(),
@@ -158,26 +118,25 @@ form.addEventListener("submit", async (e) => {
     wowExp: formData.wowExp.value.trim(),
     prevGuilds: formData.prevGuilds.value.trim(),
     mainSpec: formData.mainSpec.value.trim(),
-    raiderIo: formData.raiderIo.value.trim(),        // ← FIXED
-    warcraftLogs: formData.warcraftLogs.value.trim(), // ← NEW
+    raiderIo: formData.raiderIo?.value?.trim() || "",
     attendance: formData.attendance.value.trim(),
   };
 
-  // Send to Discord
+  console.log("📤 Data to send:", data);
+
   const success = await sendToDiscord(data);
 
   if (success) {
-    // Hide form & show success message
     form.style.display = "none";
     successMessage.style.display = "block";
+    console.log("✅ SUCCESS!");
   } else {
-    // Re-enable button on error
     submitBtn.disabled = false;
     submitBtn.textContent = "Küldd el a Jelentkezést";
   }
 });
 
-// Real-time error clearing
+// Clear errors on input
 Object.keys(formData).forEach((key) => {
   if (formData[key]) {
     formData[key].addEventListener("input", () => {
@@ -190,4 +149,4 @@ Object.keys(formData).forEach((key) => {
   }
 });
 
-console.log("✅ Apply form initialized successfully!");
+console.log("✅ Apply form ready! Open F12 Console to debug.");
