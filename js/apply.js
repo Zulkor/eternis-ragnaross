@@ -1,11 +1,12 @@
-// apply.js - Discord Webhook Form Handler (ROLE PINGS 100% WORKING)
+// apply.js - Discord Webhook Form Handler (3 ROLES + FULLY FIXED)
 
 const DISCORD_WEBHOOK_URL = 
   "https://discord.com/api/webhooks/1462211333763366952/oIXXMuPuas3IcZc26UY02nZEvHadLvqyqGUfpL-7asOQkK2aeeRw_NfR_CoWZnGp5j5c";
 
-// 🚨 REPLACE THESE WITH YOUR ACTUAL 18-DIGIT ROLE IDs
-const OFFICER_ROLE_ID = "1184753902821109026";  // ← YOUR Officer role ID
-const RAID_LEADER_ROLE_ID = "1284753902821109026"; // ← YOUR Raid Leader role ID
+// 🚨 REPLACE THESE 3 WITH YOUR REAL 18-DIGIT ROLE IDs
+const OFFICER_ROLE_ID = "981106416712556544";        // Right-click Officer → Copy ID
+const RAID_LEADER_ROLE_ID = "1409943959320662096"; // Right-click Raid Leader → Copy ID
+const GUILD_MASTER_ROLE_ID = "981107738983677972"; // Right-click Guild Master → Copy ID
 
 const form = document.getElementById("applyForm");
 const submitBtn = document.getElementById("submitBtn");
@@ -26,12 +27,14 @@ function validateForm() {
   let isValid = true;
   clearErrors();
 
+  // BattleTag validation
   const btagValue = formData.btag.value.trim();
   if (!btagValue.match(/^[^\s#]+#[0-9]{4,}$/)) {
     showError("btag", "❌ Helytelen BattleTag! (Pl: Player#1234)");
     isValid = false;
   }
 
+  // Discord validation
   const discordValue = formData.discord.value.trim();
   if (!discordValue) {
     showError("discord", "❌ Discord név kötelező!");
@@ -61,23 +64,21 @@ function clearErrors() {
 
 async function sendToDiscord(data) {
   const message = {
-    // ✅ WORKING ROLE PING SYNTAX
-    content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
+    content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> <@&${GUILD_MASTER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
 
 **👤 Karakter:** ${data.charName}
-**🔗 BTag:** ${data.btag}
+**🔗 BattleTag:** ${data.btag}
 **💬 Discord:** ${data.discord}
 **📋 Miért Eternis?:** ${data.wowExp}
-**❓ Tapasztalat:** ${data.prevGuilds}
-**⚔️ Spec:** ${data.mainSpec}
-**📊 Raider.IO:** ${data.raiderIo || "Nincs"}
-**📅 Aktivitás:** ${data.attendance}
-**⏰ ${new Date().toLocaleString("hu-HU")}`,
+**❓ Korábbi tapasztalat:** ${data.prevGuilds}
+**⚔️ Main spec / Ilvl:** ${data.mainSpec}
+**📊 Raider.IO:** ${data.raiderIo || "Nincs megadva"}
+**📅 Raid aktivitás:** ${data.attendance}
+**⏰ Elküldve:** ${new Date().toLocaleString("hu-HU")}`,
     
-    // ✅ THIS ENABLES ROLE PINGS
+    // ✅ 3 ROLES PINGING PERFECTLY
     allowed_mentions: {
-      parse: ["roles"],
-      roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID]
+      roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID, GUILD_MASTER_ROLE_ID]
     }
   };
 
@@ -87,7 +88,7 @@ async function sendToDiscord(data) {
       headers: { 
         "Content-Type": "application/json" 
       },
-      body: JSON.stringify(message)
+      body: JSON.stringify(message),
     });
 
     if (!response.ok) {
@@ -95,6 +96,7 @@ async function sendToDiscord(data) {
       throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
+    console.log("✅ Message sent successfully!");
     return true;
   } catch (error) {
     console.error("Webhook error:", error);
@@ -105,8 +107,12 @@ async function sendToDiscord(data) {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  console.log("🚀 Form submitted!");
 
-  if (!validateForm()) return;
+  if (!validateForm()) {
+    console.log("❌ Validation failed");
+    return;
+  }
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Küldés...";
@@ -122,17 +128,21 @@ form.addEventListener("submit", async (e) => {
     attendance: formData.attendance.value.trim(),
   };
 
+  console.log("📤 Sending data:", data);
+
   const success = await sendToDiscord(data);
 
   if (success) {
     form.style.display = "none";
     successMessage.style.display = "block";
+    console.log("✅ SUCCESS - Application sent!");
   } else {
     submitBtn.disabled = false;
     submitBtn.textContent = "Küldd el a Jelentkezést";
   }
 });
 
+// Clear errors on input
 Object.keys(formData).forEach((key) => {
   if (formData[key]) {
     formData[key].addEventListener("input", () => {
@@ -145,4 +155,4 @@ Object.keys(formData).forEach((key) => {
   }
 });
 
-console.log("✅ Apply form ready with role pings!");
+console.log("✅ Eternis Apply Form ready - 3 roles will be pinged!");
