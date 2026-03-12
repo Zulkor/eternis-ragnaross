@@ -4,8 +4,10 @@ const DISCORD_WEBHOOK_URL =
   "https://discord.com/api/webhooks/1462211333763366952/oIXXMuPuas3IcZc26UY02nZEvHadLvqyqGUfpL-7asOQkK2aeeRw_NfR_CoWZnGp5j5c";
 
 // 🚨 REPLACE THESE WITH YOUR ACTUAL ROLE IDs (18 digits)
-const OFFICER_ROLE_ID = "PUT_OFFICER_ROLE_ID_HERE";  // Right-click Officer role → Copy ID
-const RAID_LEADER_ROLE_ID = "PUT_RAID_LEADER_ROLE_ID_HERE";  // Right-click Raid Leader → Copy ID
+// ✅ CORRECT - example format
+const OFFICER_ROLE_ID = "1184753902821109026";  // Your actual Officer ID
+const RAID_LEADER_ROLE_ID = "1284753902821109026"; // Your actual Raid Leader ID
+
 
 const form = document.getElementById("applyForm");
 const submitBtn = document.getElementById("submitBtn");
