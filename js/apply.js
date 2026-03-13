@@ -61,9 +61,7 @@ function clearErrors() {
     if (formData[key]) formData[key].classList.remove("error");
   });
 }
-const expKey = expansion.replace(/\s/g, "_");
 
-raidRef.child(expKey).child(raidName).set(data);
 async function sendToDiscord(data) {
   const message = {
     content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> <@&${GUILD_MASTER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
@@ -78,7 +76,6 @@ async function sendToDiscord(data) {
 **📅 Raid aktivitás:** ${data.attendance}
 **⏰ Elküldve:** ${new Date().toLocaleString("hu-HU")}`,
 
-    // ✅ 3 ROLES PINGING PERFECTLY
     allowed_mentions: {
       roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID, GUILD_MASTER_ROLE_ID],
     },
@@ -123,7 +120,7 @@ form.addEventListener("submit", async (e) => {
     charName: formData.charName.value.trim(),
     btag: formData.btag.value.trim(),
     discord: formData.discord.value.trim(),
-    wowExp: formData.wowExp.value.trim(),
+    wowExp: formData.wowExp.value.trim(), // <-- FIXED HERE
     prevGuilds: formData.prevGuilds.value.trim(),
     mainSpec: formData.mainSpec.value.trim(),
     raiderIo: formData.raiderIo?.value?.trim() || "",
