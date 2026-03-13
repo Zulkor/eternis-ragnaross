@@ -10,6 +10,251 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+      .empty-roster {
+  text-align: center;
+  padding: 80px 40px;
+  color: #c4b5a0;
+  grid-column: 1 / -1;
+}
+.empty-roster h3 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #e0cfa9;
+  font-weight: 900;
+}
+
+      /* ROSTER CSS - EZ HIÁNYZOTT! */
+   #rosterAdminContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+  padding: 20px 0;
+  max-width: 100%;
+}
+
+.roster-card {
+  flex-direction: row !important;
+  align-items: center;
+  padding: 20px 30px;
+  min-height: auto;
+  max-width: none;
+}
+
+
+
+      .roster-card {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 26, 46, 0.95),
+          rgba(35, 25, 15, 0.9)
+        );
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 24px;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .roster-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #d4af37, #e0cfa9, #d4af37);
+      }
+
+      .roster-card:hover {
+        transform: translateY(-8px);
+        border-color: #d4af37;
+        box-shadow: 0 30px 60px rgba(212, 175, 55, 0.4);
+      }
+
+      .roster-card h3 {
+        color: #e0cfa9;
+        font-size: 24px;
+        font-weight: 900;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: linear-gradient(45deg, #e0cfa9, #d4af37);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .roster-card p {
+        color: #c4b5a0;
+        margin: 8px 0;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .roster-card a {
+        color: #d4af37;
+        text-decoration: none;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        padding: 4px 0;
+        transition: all 0.3s;
+      }
+
+      .roster-card a:hover {
+        color: #e0cfa9;
+        border-bottom-color: #d4af37;
+      }
+
+      .player-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+      }
+
+      .player-actions button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .delete-btn {
+        background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+        color: white;
+      }
+
+      .delete-btn:hover {
+        background: linear-gradient(45deg, #ff5252, #ff6b6b);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+      }
+
+      .move-btn {
+        background: linear-gradient(45deg, #d4af37, #e0cfa9);
+        color: #1a1a2e;
+      }
+
+      .move-btn:hover {
+        background: linear-gradient(45deg, #e0cfa9, #d4af37);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.5);
+      }
+
+      /* ADD PLAYER FORM */
+      #addPlayerForm {
+        background: linear-gradient(
+          135deg,
+          rgba(35, 25, 15, 0.95),
+          rgba(52, 38, 22, 0.9)
+        );
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 24px;
+        padding: 30px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(25px);
+      }
+
+      #addPlayerForm h2 {
+        color: #e0cfa9;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: 900;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-row > * {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-row label {
+        color: #d4af37;
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .form-row input,
+      .form-row select {
+        padding: 14px 18px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s;
+        font-weight: 500;
+      }
+
+      .form-row input:focus,
+      .form-row select:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      #addPlayerForm button[type="submit"] {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(45deg, #d4af37, #e0cfa9);
+        color: #1a1a2e;
+        border: none;
+        border-radius: 16px;
+        font-weight: 900;
+        font-size: 18px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: all 0.3s;
+      }
+
+      #addPlayerForm button[type="submit"]:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(212, 175, 55, 0.5);
+      }
+
+      /* A többi CSS változatlan marad... */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: #fff;
+        min-height: 100vh;
+        padding: 20px;
+      }
       /* --- YOUR EXISTING CSS KEPT AS-IS --- */
       * {
         margin: 0;
@@ -529,9 +774,9 @@
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="progress.html">Progress</a></li>
+            <li><a href="roster.html">Roster</a></li>
             <li><a href="rules.html">Szabályok</a></li>
             <li><a href="apply.html">Jelentkezés</a></li>
-            <li><a href="admin.html">Admin</a></li>
           </ul>
         </nav>
       </div>
@@ -541,7 +786,6 @@
       <div class="login-section" id="loginSection">
         <div class="admin-header">
           <h1>🔐 Admin Panel</h1>
-          <p>Eternis Guild Raid Tracker</p>
         </div>
         <form onsubmit="handleLogin(event)">
           <div class="form-group">
@@ -572,17 +816,67 @@
           <button class="tab-btn active" onclick="switchTab(event, 'raids')">
             ⚔️ Raid Progress
           </button>
+          <button class="tab-btn" onclick="switchTab(event, 'roster')">
+            👥 Roster
+          </button>
         </div>
 
         <div id="raids-tab" class="tab-content active">
           <div class="raids-grid" id="raidsGrid"></div>
         </div>
+
+       <div id="roster-tab" class="tab-content">
+  <div class="stats-section">
+    <h2>Roster Management</h2>
+    <form id="addPlayerForm">
+      <div class="form-row">
+        <div>
+          <label for="playerName">Karakter név</label>
+          <input type="text" id="playerName" placeholder="Pl: Zulkor" required />
+        </div>
+        <div>
+          <label for="playerClass">Kaszt</label>
+          <select id="playerClass" required>
+            <option value="">-- Válassz kasztot --</option>
+            <option value="Warrior">Warrior</option>
+            <option value="Paladin">Paladin</option>
+            <option value="Hunter">Hunter</option>
+            <option value="Rogue">Rogue</option>
+            <option value="Priest">Priest</option>
+            <option value="Shaman">Shaman</option>
+            <option value="Mage">Mage</option>
+            <option value="Warlock">Warlock</option>
+            <option value="Monk">Monk</option>
+            <option value="Druid">Druid</option>
+            <option value="Demon Hunter">Demon Hunter</option>
+            <option value="Death Knight">Death Knight</option>
+            <option value="Evoker">Evoker</option>
+          </select>
+        </div>
       </div>
-    </div>
+      <div class="form-row">
+        <div>
+          <label for="playerRole">Szerep</label>
+          <select id="playerRole" required>
+            <option value="">-- Válassz szerepet --</option>
+            <option value="Tank">Tank</option>
+            <option value="Healer">Healer</option>
+            <option value="DPS">DPS</option>
+          </select>
+        </div>
+        <div>
+          <label for="playerRaiderIO">Raider.IO</label>
+          <input type="url" id="playerRaiderIO" placeholder="https://raider.io/..." required />
+        </div>
+      </div>
+      <button type="submit">➕ Új játékos hozzáadása</button>
+    </form>
+  </div>
+  <div id="rosterAdminContainer"></div>
+</div>
 
     <script>
-      console.log("🔥 ADMIN START");
-
+      // 🔹 FIREBASE INIT
       const firebaseConfig = {
         apiKey: "AIzaSyDxXh_68XFG_n8zUTAg1IPUe0lI4qQalsM",
         authDomain: "eternis-progress.firebaseapp.com",
@@ -593,69 +887,84 @@
         messagingSenderId: "820448513456",
         appId: "1:820448513456:web:521976f61a9f6cdc34da75",
       };
-
-      firebase.initializeApp(firebaseConfig);
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
       const raidRef = db.ref("raidData");
+      const rosterRef = db.ref("rosterData");
       const ADMIN_PASSWORD = "EternisAdminsRoom123!";
 
+      // 🔹 RAID CONFIG
       const ALL_RAIDS = {
         Midnight: {
-          "The Voidspire": {
-            total: 6,
-            bosses: [
-              "Imperator Averzian",
-              "Vorasius",
-              "Fallen-King Salhadaar",
-              "Vaelgor & Ezzorak",
-              "Lightblinded Vanguard",
-              "Crown of the Cosmos",
-            ],
-          },
-          "The Dreamrift": {
-            total: 1,
-            bosses: ["Chimaerus the Undreamt God"],
-          },
-          "March on Quel'Danas": {
-            total: 2,
-            bosses: ["Belo'ren, Child of Al'ar", "Midnight Falls"],
-          },
+          "The Voidspire": [
+            "Imperator Averzian",
+            "Vorasius",
+            "Fallen-King Salhadaar",
+            "Vaelgor & Ezzorak",
+            "Lightblinded Vanguard",
+            "Crown of the Cosmos",
+          ],
+          "The Dreamrift": ["Chimaerus the Undreamt God"],
+          "March on Quel'Danas": ["Belo'ren, Child of Al'ar", "Midnight Falls"],
         },
         "The War Within": {
-          "Manaforge Omega": {
-            total: 8,
-            bosses: [
-              "Plexus Sentinel",
-              "Loom'ithar",
-              "Soulbinder Naazindhri",
-              "Forgeweaver Araz",
-              "The Soul Hunters",
-              "Fractillus",
-              "Nexus-King Salhadaar",
-              "Dimensius",
-            ],
-          },
+          "Manaforge Omega": [
+            "Plexus Sentinel",
+            "Loom'ithar",
+            "Soulbinder Naazindhri",
+            "Forgeweaver Araz",
+            "The Soul Hunters",
+            "Fractillus",
+            "Nexus-King Salhadaar",
+            "Dimensius",
+          ],
         },
       };
 
       let raidData = {};
+      let rosterData = { players: [] };
 
-      document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("hamburger").onclick = function () {
-          this.classList.toggle("active");
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("hamburger").onclick = () => {
+          document.getElementById("hamburger").classList.toggle("active");
           document.getElementById("nav-menu").classList.toggle("active");
         };
 
+        // 🔹 FETCH RAID DATA
         raidRef.on("value", (snap) => {
           raidData = snap.val() || {};
           if (
             document.getElementById("adminDashboard").classList.contains("show")
-          ) {
+          )
             loadRaids();
-          }
         });
+
+        // 🔹 FETCH ROSTER DATA
+        rosterRef.on("value", (snap) => {
+          rosterData = snap.val() || { players: [] };
+          if (
+            document.getElementById("adminDashboard").classList.contains("show")
+          )
+            loadRoster();
+        });
+
+        // 🔹 ADD PLAYER FORM
+        document
+          .getElementById("addPlayerForm")
+          .addEventListener("submit", (e) => {
+            e.preventDefault();
+            const player = {
+              name: document.getElementById("playerName").value,
+              class: document.getElementById("playerClass").value,
+              role: document.getElementById("playerRole").value,
+              raiderIO: document.getElementById("playerRaiderIO").value,
+            };
+            addPlayer(player);
+            e.target.reset();
+          });
       });
 
+      // 🔹 LOGIN / LOGOUT
       function handleLogin(e) {
         e.preventDefault();
         const pass = document.getElementById("passwordInput").value;
@@ -663,6 +972,7 @@
           document.getElementById("loginSection").classList.add("hidden");
           document.getElementById("adminDashboard").classList.add("show");
           loadRaids();
+          loadRoster();
         } else {
           const err = document.getElementById("errorMessage");
           err.textContent = "❌ Hibás jelszó!";
@@ -687,48 +997,46 @@
         document.getElementById(tabName + "-tab").classList.add("active");
       }
 
+      // 🔹 RAID FUNCTIONS
       function loadRaids() {
         const container = document.getElementById("raidsGrid");
         container.innerHTML = "";
-        for (let expansion in ALL_RAIDS) {
-          const raids = ALL_RAIDS[expansion];
-          for (let instance in raids) {
+        for (let exp in ALL_RAIDS) {
+          for (let inst in ALL_RAIDS[exp]) {
             const card = document.createElement("div");
             card.className = "raid-card";
-            let html = `<h3>${expansion} - ${instance}</h3><div class="boss-list">`;
-            raids[instance].bosses.forEach((boss) => {
-              const checked = raidData[expansion]?.[instance]?.[boss]
-                ? "checked"
-                : "";
-              html += `<label class="boss-checkbox"><input type="checkbox" data-expansion="${expansion}" data-instance="${instance}" data-boss="${boss}" ${checked} onchange="updateBoss(this)"> ${boss}</label>`;
+            let html = `<h3>${exp} - ${inst}</h3><div class="boss-list">`;
+            ALL_RAIDS[exp][inst].forEach((boss) => {
+              const checked = raidData[exp]?.[inst]?.[boss] ? "checked" : "";
+              html += `<label class="boss-checkbox"><input type="checkbox" data-expansion="${exp}" data-instance="${inst}" data-boss="${boss}" ${checked} onchange="updateBoss(this)"> ${boss}</label>`;
             });
             html += `</div>`;
-            html += `<div class="kill-count" id="count-${encodeURIComponent(expansion)}-${encodeURIComponent(instance)}">0 / ${raids[instance].total}</div>`;
-            html += `<button class="update-btn" onclick="saveRaid(\`${encodeURIComponent(expansion)}\`, \`${encodeURIComponent(instance)}\`)">💾 Mentés</button>`;
+            html += `<div class="kill-count" id="count-${encodeURIComponent(exp)}-${encodeURIComponent(inst)}">0 / ${ALL_RAIDS[exp][inst].length}</div>`;
+            html += `<button class="update-btn" onclick="saveRaid('${encodeURIComponent(exp)}','${encodeURIComponent(inst)}')">💾 Mentés</button>`;
             card.innerHTML = html;
             container.appendChild(card);
-            updateLiveCount(expansion, instance);
+            updateLiveCount(exp, inst);
           }
         }
       }
 
       function updateBoss(el) {
-        const expansion = el.dataset.expansion;
-        const instance = el.dataset.instance;
-        const boss = el.dataset.boss;
-        if (!raidData[expansion]) raidData[expansion] = {};
-        if (!raidData[expansion][instance]) raidData[expansion][instance] = {};
-        raidData[expansion][instance][boss] = el.checked;
-        updateLiveCount(expansion, instance);
+        const exp = el.dataset.expansion,
+          inst = el.dataset.instance,
+          boss = el.dataset.boss;
+        if (!raidData[exp]) raidData[exp] = {};
+        if (!raidData[exp][inst]) raidData[exp][inst] = {};
+        raidData[exp][inst][boss] = el.checked;
+        updateLiveCount(exp, inst);
       }
 
-      function updateLiveCount(expansion, instance) {
-        const total = ALL_RAIDS[expansion][instance].total;
-        const kills = Object.values(
-          raidData[expansion]?.[instance] || {},
-        ).filter((v) => v).length;
+      function updateLiveCount(exp, inst) {
+        const total = ALL_RAIDS[exp][inst].length;
+        const kills = Object.values(raidData[exp]?.[inst] || {}).filter(
+          (v) => v,
+        ).length;
         const el = document.getElementById(
-          `count-${encodeURIComponent(expansion)}-${encodeURIComponent(instance)}`,
+          `count-${encodeURIComponent(exp)}-${encodeURIComponent(inst)}`,
         );
         if (el) {
           el.textContent = `${kills} / ${total}`;
@@ -736,14 +1044,83 @@
         }
       }
 
-      function saveRaid(expansionEncoded, instanceEncoded) {
-        const expansion = decodeURIComponent(expansionEncoded);
-        const instance = decodeURIComponent(instanceEncoded);
+      function saveRaid(expEnc, instEnc) {
+        const exp = decodeURIComponent(expEnc),
+          inst = decodeURIComponent(instEnc);
         raidRef
-          .child(`${expansion}/${instance}`)
-          .set(raidData[expansion][instance])
+          .child(`${exp}/${inst}`)
+          .set(raidData[exp][inst])
           .then(() => alert("✅ Mentés sikeres!"))
           .catch((err) => alert("❌ Mentés sikertelen: " + err));
+      }
+
+      // 🔹 ROSTER FUNCTIONS
+      function loadRoster() {
+  const container = document.getElementById("rosterAdminContainer");
+  container.innerHTML = "";
+  
+  if (!rosterData.players || rosterData.players.length === 0) {
+    container.innerHTML = `
+      <div class="empty-roster">
+        <h3>📭 Üres roster</h3>
+        <p>Adj hozzá játékosokat a fenti űrlappal! 🎮</p>
+      </div>
+    `;
+    return;
+  }
+
+  rosterData.players.forEach((player, index) => {
+    const card = document.createElement("div");
+    card.className = "roster-card";
+    card.innerHTML = `
+      <div class="player-info">
+        <h3>${player.name}</h3>
+        <p>🏟️ <strong>Kaszt:</strong> ${player.class}</p>
+        <p>⚔️ <strong>Szerep:</strong> ${player.role}</p>
+        <p><a href="${player.raiderIO}" target="_blank">📊 Raider.IO megtekintése</a></p>
+      </div>
+      <div class="player-actions">
+        <button class="delete-btn" onclick="deletePlayer(${index})">🗑️ Törlés</button>
+        <button class="move-btn" onclick="movePlayer(${index}, ${index-1})" ${index===0?'disabled':''}>⬆️ Fel</button>
+        <button class="move-btn" onclick="movePlayer(${index}, ${index+1})">⬇️ Le</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+      
+
+      function addPlayer(player) {
+        rosterData.players.push(player);
+        saveRoster();
+      }
+
+      function deletePlayer(idx) {
+        rosterData.players.splice(idx, 1);
+        saveRoster();
+      }
+
+      function movePlayer(oldIdx, newIdx) {
+        if (newIdx < 0 || newIdx >= rosterData.players.length) return;
+        const [player] = rosterData.players.splice(oldIdx, 1);
+        rosterData.players.splice(newIdx, 0, player);
+        saveRoster();
+      }
+
+      function saveRoster() {
+        rosterRef
+          .set(rosterData)
+          .then(() => {
+            loadRoster();
+            localStorage.setItem(
+              "rosterData",
+              JSON.stringify(rosterData.players),
+            );
+            window.dispatchEvent(new Event("rosterDataUpdated"));
+            alert("✅ Roster updated successfully!");
+          })
+          .catch((err) => alert("❌ Failed to save roster: " + err));
       }
     </script>
   </body>

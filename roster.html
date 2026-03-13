@@ -6,6 +6,9 @@
     <title>Eternis - WoW Guild | Roster</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/roster-styles.css" />
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   </head>
   <body>
     <div class="bg-wrapper"></div>
@@ -15,19 +18,12 @@
         <div class="logo">
           <a href="index.html" class="logo">Eternis</a>
         </div>
-
-        <!-- Hamburger -->
         <button class="hamburger" id="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </button>
-
-        <!-- Navigation -->
         <nav id="nav-menu">
           <ul>
             <li><a href="index.html">Home</a></li>
-            <!-- <li><a href="roster.html">Roster</a></li> -->
             <li><a href="gallery.html">Gallery</a></li>
             <li><a href="progress.html">Progress</a></li>
             <li><a href="rules.html">Szabályok</a></li>
@@ -56,7 +52,6 @@
               </tr>
             </thead>
             <tbody id="rosterTableBody">
-              <!-- Dynamically populated from localStorage -->
               <tr>
                 <td colspan="5" style="text-align: center; color: #888">
                   Betöltés...
@@ -71,25 +66,21 @@
     <footer>
       <div class="footer-content">
         <div class="footer-logo">Eternis</div>
-
         <div class="footer-links">
           <a
             href="https://discord.gg/eternis"
-            class="footer-link"
             target="_blank"
+            class="footer-link"
             >Discord</a
           >
           <a href="apply.html" class="footer-link">Apply</a>
           <a href="rules.html" class="footer-link">Szabályok</a>
         </div>
-
         <div class="footer-info">
           <p>Mythic raiding guild | CE or bust | Trial applications open</p>
           <p>WoW The War Within | EU servers</p>
         </div>
-
         <div class="footer-divider"></div>
-
         <p class="footer-copyright">
           © 2026 Eternis Guild. All rights reserved.
         </p>
@@ -98,7 +89,23 @@
 
     <script>
       // ============================================
-      // CLASS COLOR MAPPING
+      // Firebase Setup
+      // ============================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyDxXh_68XFG_n8zUTAg1IPUe0lI4qQalsM",
+        authDomain: "eternis-progress.firebaseapp.com",
+        databaseURL:
+          "https://eternis-progress-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "eternis-progress",
+        storageBucket: "eternis-progress.appspot.com",
+        messagingSenderId: "820448513456",
+        appId: "1:820448513456:web:521976f61a9f6cdc34da75",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const rosterRef = firebase.database().ref("rosterData/players");
+
+      // ============================================
+      // CLASS & ROLE MAPPING
       // ============================================
       const classColorMap = {
         Warrior: "class-warrior",
@@ -115,127 +122,88 @@
         "Death Knight": "class-death-knight",
         Evoker: "class-evoker",
       };
-
-      // Role to badge class mapping
-      const roleMap = {
-        Tank: "tank",
-        Healer: "healer",
-        DPS: "dps",
-      };
+      const roleMap = { Tank: "tank", Healer: "healer", DPS: "dps" };
 
       // ============================================
-      // ROSTER DATA MANAGEMENT
+      // ROSTER MANAGEMENT
       // ============================================
       let rosterData = [];
-
-      function loadRosterData() {
-        const saved = localStorage.getItem("rosterData");
-        if (saved) {
-          try {
-            rosterData = JSON.parse(saved);
-            console.log("✅ Roster data loaded:", rosterData);
-          } catch (error) {
-            console.error("❌ Failed to parse roster data:", error);
-            rosterData = [];
-          }
-        } else {
-          console.log("⚠️ No roster data found in localStorage");
-          rosterData = [];
-        }
-      }
 
       function renderRosterTable() {
         const tbody = document.getElementById("rosterTableBody");
         const playerCount = document.getElementById("playerCount");
-
-        if (!tbody) {
-          console.error("❌ tbody element not found");
-          return;
-        }
-
         tbody.innerHTML = "";
 
-        if (rosterData.length === 0) {
+        if (!rosterData || rosterData.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; color: #888;">
+              <td colspan="5" style="text-align:center;color:#888;">
                 Jelenleg nincs játékos a rosztérben
               </td>
-            </tr>
-          `;
+            </tr>`;
           playerCount.textContent = "0 játékos";
-          console.log("⚠️ Roster is empty");
           return;
         }
 
-        // Sort roster: Tanks → Healers → DPS
+        // Sort: Tank → Healer → DPS
         const roleOrder = { Tank: 0, Healer: 1, DPS: 2 };
-        const sortedRoster = [...rosterData].sort((a, b) => {
-          return (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
-        });
+        const sortedRoster = [...rosterData].sort(
+          (a, b) => (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99),
+        );
 
         sortedRoster.forEach((player) => {
           const classColorClass = classColorMap[player.class] || "";
           const roleClass = roleMap[player.role] || "dps";
-
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>
-              <span class="player-name ${classColorClass}">
-                ${player.name}
-              </span>
-            </td>
+            <td><span class="player-name ${classColorClass}">${player.name}</span></td>
             <td>${player.class}</td>
-            <td>
-              <span class="role-badge ${roleClass}">
-                ${player.role}
-              </span>
-            </td>
-            <td>
-              <a href="${player.raiderIO}" target="_blank" class="raiderio-link">
-                Raider.IO
-              </a>
-            </td>
+            <td><span class="role-badge ${roleClass}">${player.role}</span></td>
+            <td><a href="${player.raiderIO}" target="_blank" class="raiderio-link">Raider.IO</a></td>
             <td><span class="status-active">Active</span></td>
           `;
-
           tbody.appendChild(row);
         });
-
         playerCount.textContent = `${rosterData.length} Player`;
-        console.log(`✅ Roster table rendered (${rosterData.length} players)`);
       }
 
       // ============================================
-      // EVENT LISTENERS
+      // Load from Firebase & LocalStorage fallback
       // ============================================
+      function loadRoster() {
+        rosterRef.on("value", (snapshot) => {
+          const data = snapshot.val();
+          if (data && Array.isArray(data)) {
+            rosterData = data;
+            localStorage.setItem("rosterData", JSON.stringify(rosterData));
+            renderRosterTable();
+          } else {
+            // fallback to localStorage
+            const saved = localStorage.getItem("rosterData");
+            if (saved) rosterData = JSON.parse(saved);
+            renderRosterTable();
+          }
+        });
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         console.log("🔄 Roster page initializing...");
-        loadRosterData();
-        renderRosterTable();
-        console.log("✅ Roster page ready!");
+        loadRoster();
       });
 
       // Listen for updates from admin.js
-      window.addEventListener("rosterDataUpdated", (event) => {
-        console.log("🔔 rosterDataUpdated event received");
-        loadRosterData();
-        renderRosterTable();
+      window.addEventListener("rosterDataUpdated", () => {
+        loadRoster();
       });
 
-      // Also listen for storage changes (for multi-tab sync)
+      // Storage event for multi-tab
       window.addEventListener("storage", (event) => {
-        if (event.key === "rosterData") {
-          console.log("🔄 Storage changed - reloading roster");
-          loadRosterData();
-          renderRosterTable();
-        }
+        if (event.key === "rosterData") loadRoster();
       });
-    </script>
-    <script>
+
+      // Hamburger toggle
       const hamburger = document.getElementById("hamburger");
       const navMenu = document.getElementById("nav-menu");
-
       hamburger.addEventListener("click", () => {
         hamburger.classList.toggle("active");
         navMenu.classList.toggle("active");

@@ -16,7 +16,12 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.database();
+
+// 🔹 FIREBASE REFS
 const raidRef = db.ref("raidData");
+const rosterRef = db.ref("rosterData");
+
+// 🔹 ADMIN CONFIG
 const ADMIN_PASSWORD = "EternisAdminsRoom123!";
 
 // 🔹 RAID CONFIG
@@ -49,12 +54,21 @@ const ALL_RAIDS = {
 
 // 🔹 STATE
 let raidData = {};
+let rosterData = { players: [] };
 
-// 🔹 FETCH DATA
+// 🔹 FETCH RAID DATA
 raidRef.on("value", (snap) => {
   raidData = snap.val() || {};
   if (document.getElementById("adminDashboard").classList.contains("show")) {
     loadRaids();
+  }
+});
+
+// 🔹 FETCH ROSTER DATA
+rosterRef.on("value", (snap) => {
+  rosterData = snap.val() || { players: [] };
+  if (document.getElementById("adminDashboard").classList.contains("show")) {
+    loadRoster();
   }
 });
 
@@ -66,6 +80,7 @@ function handleLogin(e) {
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("adminDashboard").classList.add("show");
     loadRaids();
+    loadRoster();
   } else {
     const err = document.getElementById("errorMessage");
     err.textContent = "❌ Hibás jelszó!";
@@ -83,6 +98,7 @@ function handleLogout() {
 // 🔹 LOAD RAIDS
 function loadRaids() {
   const container = document.getElementById("raidsGrid");
+  if (!container) return;
   container.innerHTML = "";
 
   for (let expansion in ALL_RAIDS) {
@@ -104,7 +120,7 @@ function loadRaids() {
                            data-boss="${boss}"
                            ${checked}>
                     ${boss}
-                  </label>`;
+                 </label>`;
       });
 
       html += `</div>`;
@@ -114,12 +130,12 @@ function loadRaids() {
       card.innerHTML = html;
       container.appendChild(card);
 
-      // ✅ Add checkbox listener
+      // Checkbox listener
       card.querySelectorAll("input[type=checkbox]").forEach((chk) => {
         chk.addEventListener("change", () => updateBoss(chk));
       });
 
-      // ✅ Add save button listener
+      // Save button listener
       card.querySelector(".update-btn").addEventListener("click", (e) => {
         const exp = e.currentTarget.dataset.expansion;
         const inst = e.currentTarget.dataset.instance;
@@ -131,7 +147,7 @@ function loadRaids() {
   }
 }
 
-// 🔹 UPDATE BOSS CHECKBOX
+// 🔹 UPDATE RAID BOSS
 function updateBoss(el) {
   const expansion = el.dataset.expansion;
   const instance = el.dataset.instance;
@@ -159,11 +175,77 @@ function updateLiveCount(expansion, instance) {
   }
 }
 
-// 🔹 SAVE TO FIREBASE
+// 🔹 SAVE RAID TO FIREBASE
 function saveRaid(expansion, instance) {
   raidRef
     .child(`${expansion}/${instance}`)
     .set(raidData[expansion][instance])
     .then(() => alert("✅ Mentés sikeres!"))
     .catch((err) => alert("❌ Mentés sikertelen: " + err));
+}
+
+// 🔹 LOAD ROSTER IN ADMIN
+function loadRoster() {
+  const container = document.getElementById("rosterAdminContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  rosterData.players.forEach((player, index) => {
+    const row = document.createElement("div");
+    row.className = "roster-card";
+    row.innerHTML = `
+  <div class="player-info">
+    <h3>${player.name}</h3>
+    <p><strong>Class:</strong> ${player.class}</p>
+    <p><strong>Role:</strong> ${player.role}</p>
+    <p><a href="${player.raiderIO}" target="_blank">Raider.IO</a></p>
+  </div>
+  <div class="player-actions">
+    <button onclick="deletePlayer(${idx})">❌ Delete</button>
+    <button onclick="movePlayer(${idx},${idx - 1})">⬆️ Up</button>
+    <button onclick="movePlayer(${idx},${idx + 1})">⬇️ Down</button>
+  </div>
+`;
+    container.appendChild(row);
+  });
+}
+
+// 🔹 ADD PLAYER
+function addPlayer(player) {
+  if (!rosterData.players) rosterData.players = [];
+  rosterData.players.push(player);
+  saveRoster();
+}
+
+// 🔹 DELETE PLAYER
+function deletePlayer(index) {
+  if (!rosterData.players || !rosterData.players[index]) return;
+  rosterData.players.splice(index, 1);
+  saveRoster();
+}
+
+// 🔹 MOVE PLAYER
+function movePlayer(oldIndex, newIndex) {
+  if (
+    !rosterData.players ||
+    newIndex < 0 ||
+    newIndex >= rosterData.players.length
+  )
+    return;
+  const [player] = rosterData.players.splice(oldIndex, 1);
+  rosterData.players.splice(newIndex, 0, player);
+  saveRoster();
+}
+
+// 🔹 SAVE ROSTER TO FIREBASE
+function saveRoster() {
+  rosterRef
+    .set(rosterData)
+    .then(() => {
+      loadRoster();
+      alert("✅ Roster updated successfully!");
+      window.dispatchEvent(new Event("rosterDataUpdated"));
+    })
+    .catch((err) => alert("❌ Failed to save roster: " + err));
 }
