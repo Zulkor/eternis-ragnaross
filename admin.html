@@ -805,7 +805,7 @@
       <div class="admin-dashboard" id="adminDashboard">
         <div class="admin-header-bar">
           <div class="admin-welcome">
-            Üdvözlünk, <strong>Zulkor</strong>! 👑
+            Üdvözlünk, <strong>Admin</strong>! 👑
           </div>
           <button class="logout-btn" onclick="handleLogout()">
             🚪 Kijelentkezés
@@ -825,7 +825,7 @@
           <div class="raids-grid" id="raidsGrid"></div>
         </div>
 
-       <div id="roster-tab" class="tab-content">
+<div id="roster-tab" class="tab-content">
   <div class="stats-section">
     <h2>Roster Management</h2>
     <form id="addPlayerForm">
@@ -999,26 +999,37 @@
 
       // 🔹 RAID FUNCTIONS
       function loadRaids() {
-        const container = document.getElementById("raidsGrid");
-        container.innerHTML = "";
-        for (let exp in ALL_RAIDS) {
-          for (let inst in ALL_RAIDS[exp]) {
-            const card = document.createElement("div");
-            card.className = "raid-card";
-            let html = `<h3>${exp} - ${inst}</h3><div class="boss-list">`;
-            ALL_RAIDS[exp][inst].forEach((boss) => {
-              const checked = raidData[exp]?.[inst]?.[boss] ? "checked" : "";
-              html += `<label class="boss-checkbox"><input type="checkbox" data-expansion="${exp}" data-instance="${inst}" data-boss="${boss}" ${checked} onchange="updateBoss(this)"> ${boss}</label>`;
-            });
-            html += `</div>`;
-            html += `<div class="kill-count" id="count-${encodeURIComponent(exp)}-${encodeURIComponent(inst)}">0 / ${ALL_RAIDS[exp][inst].length}</div>`;
-            html += `<button class="update-btn" onclick="saveRaid('${encodeURIComponent(exp)}','${encodeURIComponent(inst)}')">💾 Mentés</button>`;
-            card.innerHTML = html;
-            container.appendChild(card);
-            updateLiveCount(exp, inst);
-          }
-        }
-      }
+  const container = document.getElementById("raidsGrid");
+  container.innerHTML = "";
+  for (let exp in ALL_RAIDS) {
+    for (let inst in ALL_RAIDS[exp]) {
+      const card = document.createElement("div");
+      card.className = "raid-card";
+      let html = `<h3>${exp} - ${inst}</h3><div class="boss-list">`;
+      ALL_RAIDS[exp][inst].forEach((boss) => {
+        const checked = raidData[exp]?.[inst]?.[boss] ? "checked" : "";
+        html += `<label class="boss-checkbox"><input type="checkbox" data-expansion="${exp}" data-instance="${inst}" data-boss="${boss}" ${checked}> ${boss}</label>`;
+      });
+      html += `</div>`;
+      html += `<div class="kill-count" id="count-${encodeURIComponent(exp)}-${encodeURIComponent(inst)}">0 / ${ALL_RAIDS[exp][inst].length}</div>`;
+      html += `<button class="update-btn" data-exp="${encodeURIComponent(exp)}" data-inst="${encodeURIComponent(inst)}">💾 Mentés</button>`;
+      card.innerHTML = html;
+      container.appendChild(card);
+      
+      // Add event listeners AFTER creating elements
+      card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.onchange = function() { updateBoss(this); };
+      });
+      card.querySelector('.update-btn').onclick = function() {
+        const expEnc = this.dataset.exp;
+        const instEnc = this.dataset.inst;
+        saveRaid(expEnc, instEnc);
+      };
+      
+      updateLiveCount(exp, inst);
+    }
+  }
+}
 
       function updateBoss(el) {
         const exp = el.dataset.expansion,
@@ -1072,19 +1083,20 @@
   rosterData.players.forEach((player, index) => {
     const card = document.createElement("div");
     card.className = "roster-card";
-    card.innerHTML = `
-      <div class="player-info">
-        <h3>${player.name}</h3>
-        <p>🏟️ <strong>Kaszt:</strong> ${player.class}</p>
-        <p>⚔️ <strong>Szerep:</strong> ${player.role}</p>
-        <p><a href="${player.raiderIO}" target="_blank">📊 Raider.IO megtekintése</a></p>
-      </div>
-      <div class="player-actions">
-        <button class="delete-btn" onclick="deletePlayer(${index})">🗑️ Törlés</button>
-        <button class="move-btn" onclick="movePlayer(${index}, ${index-1})" ${index===0?'disabled':''}>⬆️ Fel</button>
-        <button class="move-btn" onclick="movePlayer(${index}, ${index+1})">⬇️ Le</button>
-      </div>
-    `;
+   card.innerHTML = `
+  <div class="player-info">
+    <h3>${player.name}</h3>
+    <p>🏟️ <strong>Kaszt:</strong> ${player.class}</p>
+    <p>⚔️ <strong>Szerep:</strong> ${player.role}</p>
+    <p><a href="${player.raiderIO}" target="_blank">📊 Raider.IO megtekintése</a></p>
+  </div>
+  <div class="player-actions">
+    <button class="delete-btn" onclick="deletePlayer(` + index + `)">🗑️ Törlés</button>
+    <button class="move-btn" onclick="movePlayer(` + index + `, ` + (index-1) + `)" ${index===0?'disabled':''}>⬆️ Fel</button>
+    <button class="move-btn" onclick="movePlayer(` + index + `, ` + (index+1) + `)">⬇️ Le</button>
+  </div>
+`;
+
     container.appendChild(card);
   });
 }
