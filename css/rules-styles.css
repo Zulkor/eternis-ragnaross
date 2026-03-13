@@ -1,5 +1,3 @@
-# Rules Styles CSS - rules-styles.css
-
 /* ============ RULES PAGE ============ */
 
 .rules-main {
@@ -24,7 +22,6 @@
   background-clip: text;
 }
 
-
 /* ============ RULES GRID ============ */
 .rules-grid {
   display: grid;
@@ -33,7 +30,6 @@
   align-items: start;
   margin-bottom: 60px;
 }
-
 
 /* ============ RULES SECTION ============ */
 .rules-section {
@@ -46,22 +42,18 @@
   transition: all 0.3s ease;
 }
 
-
 .rules-section:hover {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
   transform: translateY(-5px);
 }
 
-
 .rules-section-gold {
   border-color: rgba(212, 175, 55, 0.3);
 }
 
-
 .rules-section-purple {
   border-color: rgba(168, 85, 247, 0.3);
 }
-
 
 /* ============ RULES SECTION TITLE ============ */
 .rules-section-title {
@@ -75,13 +67,11 @@
   letter-spacing: 2px;
 }
 
-
 .rules-section-title-gold {
   color: #e0cfa9;
   border-bottom-color: #d4af37;
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
-
 
 .rules-section-title-purple {
   color: #a855f7;
@@ -89,12 +79,10 @@
   text-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
 }
 
-
 /* ============ RULE ITEM ============ */
 .rule-item {
   margin-bottom: 0;
 }
-
 
 .rule-icon {
   font-size: 32px;
@@ -102,7 +90,6 @@
   display: block;
   text-align: center;
 }
-
 
 .rule-number {
   font-size: 18px;
@@ -113,11 +100,9 @@
   text-align: center;
 }
 
-
 .rules-section-purple .rule-number {
   color: #a855f7;
 }
-
 
 .rule-text {
   font-size: 15px;
@@ -126,11 +111,9 @@
   text-align: center;
 }
 
-
 .rules-section-purple .rule-text {
   color: #d0d0d0;
 }
-
 
 /* ============ RULE DIVIDER ============ */
 .rule-divider {
@@ -142,282 +125,108 @@
   margin-right: auto;
 }
 
-
 .rule-divider-purple {
   background: linear-gradient(90deg, transparent, #a855f7, transparent);
 }
 
-
-/* ============ APPLY BUTTON ============ */
-.rules-apply {
-  display: flex;
-  justify-content: center;
-  margin-top: 60px;
-  margin-bottom: 40px;
-}
-
-
+/* ============ APPLY BUTTON UPGRADE ============ */
 .apply-button {
   display: inline-block;
-  background: linear-gradient(135deg, #d4af37, #e0cfa9);
+  background: linear-gradient(135deg, #d4af37, #e0cfa9, #f7e6b2);
   color: #111;
   padding: 20px 50px;
   font-size: 18px;
   font-weight: 900;
-  border-radius: 25px;
+  border-radius: 30px;
   text-decoration: none;
-  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-  transition: all 0.3s cubic-bezier(0.2, 0, 0.1, 0.5);
+  box-shadow:
+    0 6px 15px rgba(212, 175, 55, 0.5),
+    0 0 25px rgba(212, 175, 55, 0.2) inset;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   letter-spacing: 2px;
   border: none;
   cursor: pointer;
   text-transform: uppercase;
-}
-
-
-.apply-button:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 45px rgba(212, 175, 55, 0.7);
-}
-
-
-.apply-button:active {
-  transform: translateY(-2px) scale(0.98);
-}
-
-
-/* ============ FOOTER ============ */
-footer {
-  background: rgba(20, 15, 10, 0.95);
-  backdrop-filter: blur(15px);
-  border-top: 1px solid rgba(199, 156, 63, 0.2);
-  padding: 40px 20px 20px;
-  margin-top: 0;
   position: relative;
   overflow: hidden;
 }
 
-
-footer::before {
+.apply-button::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #d4af37, #e0cfa9, #d4af37, transparent);
-  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(25deg);
+  transition: all 0.5s ease;
 }
 
-
-.footer-content {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-  color: #9ca3af;
+.apply-button:hover::before {
+  top: -20%;
+  left: -20%;
 }
 
-
-.footer-logo {
-  font-size: 28px;
-  margin-bottom: 25px;
-  background: linear-gradient(135deg, #d4af37, #e0cfa9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 900;
-  letter-spacing: -1px;
-  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+.apply-button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow:
+    0 12px 30px rgba(212, 175, 55, 0.7),
+    0 0 35px rgba(212, 175, 55, 0.3) inset;
 }
 
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
+.apply-button:active {
+  transform: translateY(-2px) scale(0.98);
+  box-shadow:
+    0 6px 15px rgba(212, 175, 55, 0.4),
+    0 0 25px rgba(212, 175, 55, 0.15) inset;
 }
 
-
+/* ============ FOOTER LINK UPGRADE ============ */
 .footer-link {
   color: #d4af37;
   text-decoration: none;
   font-weight: 600;
   font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 22px;
+  border-radius: 12px;
   border: 1px solid rgba(212, 175, 55, 0.3);
   background: rgba(212, 175, 55, 0.05);
   backdrop-filter: blur(5px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+.footer-link::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  transform: translateY(-50%) rotate(25deg);
+  transition: all 0.5s ease;
+}
+
+.footer-link:hover::after {
+  left: -20%;
+}
 
 .footer-link:hover {
   background: rgba(212, 175, 55, 0.15);
   border-color: #d4af37;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  box-shadow:
+    0 0 20px rgba(212, 175, 55, 0.4),
+    0 4px 15px rgba(212, 175, 55, 0.3) inset;
 }
-
-
-.footer-info {
-  margin-bottom: 20px;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-
-.footer-info p {
-  margin: 8px 0;
-  font-size: 14px;
-}
-
-
-.footer-divider {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(212, 175, 55, 0.4),
-    transparent
-  );
-  margin: 20px auto;
-  width: 200px;
-}
-
-
-.footer-copyright {
-  font-size: 12px;
-  opacity: 0.8;
-  margin: 0;
-}
-
-
-/* ============ RESPONSIVE ============ */
-@media (max-width: 768px) {
-  .rules-main {
-    padding: 60px 15px 30px;
-  }
-
-
-  .rules-title {
-    font-size: 40px;
-    margin-bottom: 40px;
-  }
-
-
-  .rules-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-
-  .rules-section {
-    padding: 30px;
-  }
-
-
-  .rules-section-title {
-    font-size: 22px;
-    text-align: center !important;
-  }
-
-
-  .rule-number {
-    font-size: 16px;
-  }
-
-
-  .rule-text {
-    font-size: 14px;
-  }
-
-
-  .apply-button {
-    padding: 16px 40px;
-    font-size: 16px;
-  }
-}
-
-
-@media (max-width: 480px) {
-  .rules-main {
-    padding: 50px 12px 20px;
-  }
-
-
-  .rules-title {
-    font-size: 28px;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
-  }
-
-
-  .rules-grid {
-    gap: 20px;
-  }
-
-
-  .rules-section {
-    padding: 20px;
-    border-radius: 12px;
-  }
-
-
-  .rules-section-title {
-    font-size: 18px;
-    text-align: center !important;
-  }
-
-
-  .rule-icon {
-    font-size: 24px;
-  }
-
-
-  .rule-number {
-    font-size: 14px;
-  }
-
-
-  .rule-text {
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-
-  .apply-button {
-    padding: 14px 30px;
-    font-size: 14px;
-    letter-spacing: 1px;
-  }
-
-
-  .footer-links {
-    gap: 15px;
-  }
-
-
-  .footer-link {
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-}
-
-## Key Changes Made:
-
-✅ **Centered Section Titles**
-- Added `text-align: center !important` to `.rules-section-title`
-- Added `width: 100%` to ensure full-width centering
-- Applied to all responsive breakpoints
-
-✅ **Added Missing `.rules-main` Wrapper**
-- Ensures consistent padding and max-width
-
-✅ **Responsive Title Centering**
-- Mobile, tablet, and desktop all center the "Guild Szabályok" and "Loot Council Szabályok" titles
-
-The titles will now be perfectly centered across all screen sizes! 🎯

@@ -1,10 +1,10 @@
 // apply.js - Discord Webhook Form Handler (3 ROLES + FULLY FIXED)
 
-const DISCORD_WEBHOOK_URL = 
+const DISCORD_WEBHOOK_URL =
   "https://discord.com/api/webhooks/1462211333763366952/oIXXMuPuas3IcZc26UY02nZEvHadLvqyqGUfpL-7asOQkK2aeeRw_NfR_CoWZnGp5j5c";
 
 // 🚨 REPLACE THESE 3 WITH YOUR REAL 18-DIGIT ROLE IDs
-const OFFICER_ROLE_ID = "981106416712556544";        // Right-click Officer → Copy ID
+const OFFICER_ROLE_ID = "981106416712556544"; // Right-click Officer → Copy ID
 const RAID_LEADER_ROLE_ID = "1409943959320662096"; // Right-click Raid Leader → Copy ID
 const GUILD_MASTER_ROLE_ID = "981107738983677972"; // Right-click Guild Master → Copy ID
 
@@ -61,7 +61,9 @@ function clearErrors() {
     if (formData[key]) formData[key].classList.remove("error");
   });
 }
+const expKey = expansion.replace(/\s/g, "_");
 
+raidRef.child(expKey).child(raidName).set(data);
 async function sendToDiscord(data) {
   const message = {
     content: `<@&${OFFICER_ROLE_ID}> <@&${RAID_LEADER_ROLE_ID}> <@&${GUILD_MASTER_ROLE_ID}> **🎯 ÚJ ETERNIS TRIAL JELENTKEZÉS!**
@@ -75,18 +77,18 @@ async function sendToDiscord(data) {
 **📊 Raider.IO:** ${data.raiderIo || "Nincs megadva"}
 **📅 Raid aktivitás:** ${data.attendance}
 **⏰ Elküldve:** ${new Date().toLocaleString("hu-HU")}`,
-    
+
     // ✅ 3 ROLES PINGING PERFECTLY
     allowed_mentions: {
-      roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID, GUILD_MASTER_ROLE_ID]
-    }
+      roles: [OFFICER_ROLE_ID, RAID_LEADER_ROLE_ID, GUILD_MASTER_ROLE_ID],
+    },
   };
 
   try {
     const response = await fetch(DISCORD_WEBHOOK_URL, {
       method: "POST",
-      headers: { 
-        "Content-Type": "application/json" 
+      headers: {
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
     });

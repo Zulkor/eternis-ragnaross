@@ -3,152 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eternis - Admin Panel</title>
-    <link rel="stylesheet" href="css/styles.css" />
+    <title>Eternis Raid Admin</title>
 
-    <!-- 🔥 FIREBASE JAVÍTVA -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <!-- Firebase 8 compat -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-      /* Minden CSS változatlan - tökéletes! */
+      /* --- YOUR EXISTING CSS KEPT AS-IS --- */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
         color: #fff;
         min-height: 100vh;
         padding: 20px;
       }
-
-      .admin-container {
-        max-width: 900px;
-        margin: 0 auto;
-      }
-
-      .admin-header {
-        text-align: center;
-        margin-bottom: 40px;
-        padding-top: 40px;
-      }
-
-      .admin-header h1 {
-        font-size: 48px;
-        background: linear-gradient(to bottom, #e0cfa9, #d4af37);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 10px;
-      }
-
-      .admin-header p {
-        color: #888;
-        font-size: 16px;
-      }
-
-      /* Login Section */
-      .login-section {
-        background: rgba(35, 25, 15, 0.7);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 16px;
-        padding: 40px;
-        margin-bottom: 30px;
-        backdrop-filter: blur(10px);
-      }
-
-      .login-section.hidden {
-        display: none;
-      }
-
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        color: #d4af37;
-        font-weight: 600;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .form-group input,
-      .form-group select {
-        width: 100%;
-        padding: 12px 16px;
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        background: rgba(0, 0, 0, 0.3);
-        color: #fff;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        font-family: inherit;
-      }
-
-      .form-group input:focus,
-      .form-group select:focus {
-        outline: none;
-        border-color: #d4af37;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-      }
-
-      .login-btn {
-        width: 100%;
-        padding: 14px;
-        background: #d4af37;
-        color: #1a1a2e;
-        border: none;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .login-btn:hover {
-        background: #e0cfa9;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
-      }
-
-      .error-message {
-        color: #ff4444;
-        font-size: 14px;
-        margin-top: 10px;
-        text-align: center;
-        display: none;
-      }
-
-      .error-message.show {
-        display: block;
-      }
-
-      /* Header & Navigation */
       .header-container {
-        max-width: 900px;
+        max-width: 1200px;
         margin: 0 auto 40px;
         padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 15px 25px;
+        border: 1px solid rgba(212, 175, 55, 0.2);
       }
-
       .logo {
-        font-size: 28px;
-        font-weight: 800;
-        background: linear-gradient(to bottom, #e0cfa9, #d4af37);
+        font-size: 32px;
+        font-weight: 900;
+        background: linear-gradient(45deg, #e0cfa9, #d4af37, #f4e4bc);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-decoration: none;
       }
-
       .hamburger {
         display: none;
         flex-direction: column;
@@ -157,424 +58,437 @@
         cursor: pointer;
         padding: 10px;
       }
-
       .hamburger span {
-        width: 25px;
+        width: 28px;
         height: 3px;
         background: #d4af37;
         margin: 3px 0;
+        border-radius: 2px;
         transition: 0.3s;
       }
-
       .hamburger.active span:nth-child(1) {
-        transform: rotate(-45deg) translate(-5px, 6px);
+        transform: rotate(-45deg) translate(-6px, 6px);
       }
-
       .hamburger.active span:nth-child(2) {
         opacity: 0;
       }
-
       .hamburger.active span:nth-child(3) {
-        transform: rotate(45deg) translate(-5px, -6px);
+        transform: rotate(45deg) translate(-6px, -6px);
       }
-
-      nav {
-        flex: 1;
-      }
-
       nav ul {
         display: flex;
         list-style: none;
         gap: 30px;
-        justify-content: flex-end;
       }
-
       nav a {
         color: #c4b5a0;
         text-decoration: none;
-        font-weight: 600;
-        transition: color 0.3s ease;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 12px;
+        transition: all 0.3s;
       }
-
       nav a:hover {
         color: #d4af37;
+        background: rgba(212, 175, 55, 0.2);
       }
-
-      /* Admin Dashboard */
+      .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .login-section {
+        background: rgba(35, 25, 15, 0.9);
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 24px;
+        padding: 50px;
+        backdrop-filter: blur(25px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      }
+      .login-section.hidden {
+        display: none;
+      }
+      .admin-header h1 {
+        font-size: 56px;
+        background: linear-gradient(45deg, #e0cfa9, #d4af37);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: #d4af37;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s;
+        font-weight: 500;
+      }
+      .form-group input:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        background: rgba(0, 0, 0, 0.7);
+      }
+      .login-btn {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(45deg, #d4af37, #e0cfa9);
+        color: #1a1a2e;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4);
+        background: linear-gradient(45deg, #e0cfa9, #d4af37);
+      }
       .admin-dashboard {
         display: none;
       }
-
       .admin-dashboard.show {
         display: block;
       }
-
       .admin-header-bar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 40px;
-        padding: 20px;
-        background: rgba(35, 25, 15, 0.7);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
+        padding: 25px 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(35, 25, 15, 0.9),
+          rgba(52, 38, 22, 0.8)
+        );
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 20px;
+        backdrop-filter: blur(25px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       }
-
-      .admin-welcome {
-        font-size: 18px;
-      }
-
-      .admin-welcome strong {
-        color: #d4af37;
-      }
-
-      .logout-btn {
-        padding: 10px 20px;
-        background: rgba(212, 175, 55, 0.2);
-        color: #d4af37;
-        border: 1px solid #d4af37;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-
-      .logout-btn:hover {
-        background: rgba(212, 175, 55, 0.3);
-        transform: translateY(-2px);
-      }
-
-      /* Tab Navigation */
       .admin-tabs {
         display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+        gap: 15px;
+        margin-bottom: 40px;
+        padding: 20px;
+        background: rgba(26, 26, 46, 0.8);
+        border-radius: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        backdrop-filter: blur(20px);
         flex-wrap: wrap;
       }
-
       .tab-btn {
-        padding: 12px 24px;
+        padding: 16px 32px;
         background: transparent;
-        color: #888;
+        color: #c4b5a0;
         border: none;
-        border-bottom: 3px solid transparent;
+        border-radius: 15px;
         cursor: pointer;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 15px;
         text-transform: uppercase;
         letter-spacing: 1px;
-        font-size: 14px;
-        transition: all 0.3s ease;
+        transition: all 0.3s;
       }
-
       .tab-btn:hover {
         color: #d4af37;
+        background: rgba(212, 175, 55, 0.2);
+        transform: translateY(-2px);
       }
-
       .tab-btn.active {
         color: #d4af37;
-        border-bottom-color: #d4af37;
+        background: linear-gradient(
+          45deg,
+          rgba(212, 175, 55, 0.3),
+          rgba(224, 207, 169, 0.3)
+        );
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
       }
-
+      .raids-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+      }
+      .raid-card {
+        background: linear-gradient(
+          135deg,
+          rgba(35, 25, 15, 0.95),
+          rgba(52, 38, 22, 0.9)
+        );
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 24px;
+        padding: 30px;
+        backdrop-filter: blur(25px);
+        transition: all 0.4s;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .raid-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #d4af37, #e0cfa9, #d4af37);
+      }
+      .raid-card:hover {
+        transform: translateY(-8px);
+        border-color: #d4af37;
+        box-shadow: 0 30px 60px rgba(212, 175, 55, 0.3);
+      }
+      .raid-card h3 {
+        color: #e0cfa9;
+        margin-bottom: 25px;
+        font-size: 22px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+        background: linear-gradient(45deg, #e0cfa9, #d4af37);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .boss-list {
+        max-height: 280px;
+        overflow-y: auto;
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 16px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        scrollbar-width: thin;
+        scrollbar-color: #d4af37 rgba(0, 0, 0, 0.5);
+      }
+      .boss-list::-webkit-scrollbar {
+        width: 8px;
+      }
+      .boss-list::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+      }
+      .boss-list::-webkit-scrollbar-thumb {
+        background: #d4af37;
+        border-radius: 4px;
+      }
+      .boss-checkbox {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        margin: 8px 0;
+        cursor: pointer;
+        border-radius: 12px;
+        transition: all 0.3s;
+        font-size: 15px;
+        font-weight: 500;
+        border: 1px solid transparent;
+      }
+      .boss-checkbox:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(212, 175, 55, 0.15),
+          rgba(212, 175, 55, 0.05)
+        );
+        border-color: rgba(212, 175, 55, 0.3);
+        transform: translateX(5px);
+      }
+      .boss-checkbox input[type="checkbox"] {
+        margin-right: 16px;
+        transform: scale(1.3);
+        accent-color: #d4af37;
+        width: 20px;
+        height: 20px;
+      }
+      .kill-count {
+        font-size: 24px;
+        font-weight: 900;
+        color: #e0cfa9;
+        margin: 25px 0;
+        padding: 20px;
+        background: linear-gradient(
+          135deg,
+          rgba(212, 175, 55, 0.2),
+          rgba(224, 207, 169, 0.1)
+        );
+        border-radius: 16px;
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        text-align: center;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      .kill-count.complete {
+        color: #00ff88 !important;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 255, 136, 0.2),
+          rgba(0, 255, 136, 0.1)
+        );
+        border-color: rgba(0, 255, 136, 0.6);
+      }
+      .update-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(45deg, #d4af37, #e0cfa9);
+        color: #1a1a2e;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+      }
+      .update-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+      }
+      .stats-section {
+        background: linear-gradient(
+          135deg,
+          rgba(35, 25, 15, 0.95),
+          rgba(52, 38, 22, 0.9)
+        );
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 24px;
+        padding: 35px;
+        backdrop-filter: blur(25px);
+        margin-bottom: 40px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      }
+      .stats-section h2 {
+        color: #e0cfa9;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+      }
+      .stat-item {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.6),
+          rgba(26, 26, 46, 0.6)
+        );
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s;
+      }
+      .stat-item:hover {
+        transform: translateY(-5px);
+        border-color: #d4af37;
+      }
+      .stat-item h4 {
+        color: #c4b5a0;
+        font-size: 13px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        letter-spacing: 1px;
+      }
+      .stat-value {
+        font-size: 42px;
+        color: #d4af37;
+        font-weight: 900;
+        text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
+      }
+      .success-message,
+      .error-message {
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 700;
+        display: none;
+      }
+      .success-message {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        border: 2px solid rgba(34, 197, 94, 0.5);
+      }
+      .success-message.show {
+        display: block;
+        animation: pulse 0.6s;
+      }
+      .error-message {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.2);
+        border: 2px solid rgba(255, 107, 107, 0.5);
+      }
+      .error-message.show {
+        display: block;
+        animation: shake 0.5s;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
       .tab-content {
         display: none;
       }
-
       .tab-content.active {
         display: block;
       }
-
-      /* Raid Cards */
-      .raids-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-      }
-
-      .raid-card {
-        background: rgba(35, 25, 15, 0.7);
-        border: 1px solid rgba(212, 175, 55, 0.3);
+      .logout-btn {
+        padding: 12px 24px;
+        background: rgba(255, 107, 107, 0.2);
+        color: #ff6b6b;
+        border: 2px solid rgba(255, 107, 107, 0.5);
         border-radius: 12px;
-        padding: 24px;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-      }
-
-      .raid-card:hover {
-        border-color: #d4af37;
-        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
-      }
-
-      .raid-card h3 {
-        color: #d4af37;
-        margin-bottom: 20px;
-        font-size: 18px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .raid-card .form-group {
-        margin-bottom: 16px;
-      }
-
-      .update-btn {
-        width: 100%;
-        padding: 12px;
-        background: rgba(212, 175, 55, 0.2);
-        color: #d4af37;
-        border: 1px solid #d4af37;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 14px;
-      }
-
-      .update-btn:hover {
-        background: #d4af37;
-        color: #1a1a2e;
-        transform: translateY(-2px);
-      }
-
-      .success-message {
-        background: rgba(34, 197, 94, 0.1);
-        color: #22c55e;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        margin-top: 12px;
-        text-align: center;
-        font-size: 14px;
-        display: none;
-      }
-
-      .success-message.show {
-        display: block;
-      }
-
-      /* Stats */
-      .stats-section {
-        background: rgba(35, 25, 15, 0.7);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 12px;
-        padding: 24px;
-        backdrop-filter: blur(10px);
-        margin-bottom: 30px;
-      }
-
-      .stats-section h2 {
-        color: #d4af37;
-        margin-bottom: 20px;
-        font-size: 20px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-      }
-
-      .stat-item {
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(212, 175, 55, 0.2);
-        border-radius: 8px;
-        padding: 16px;
-        text-align: center;
-      }
-
-      .stat-item h4 {
-        color: #888;
-        font-size: 12px;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-      }
-
-      .stat-item .stat-value {
-        font-size: 32px;
-        color: #d4af37;
-        font-weight: 900;
-      }
-
-      /* Roster Section */
-      .add-player-section {
-        background: rgba(35, 25, 15, 0.7);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 12px;
-        padding: 24px;
-        backdrop-filter: blur(10px);
-        margin-bottom: 30px;
-      }
-
-      .add-player-section h3 {
-        color: #d4af37;
-        margin-bottom: 20px;
-        font-size: 18px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .form-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 20px;
-      }
-
-      .add-btn {
-        width: 100%;
-        padding: 14px;
-        background: #d4af37;
-        color: #1a1a2e;
-        border: none;
-        border-radius: 8px;
         font-weight: 700;
-        font-size: 16px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        transition: all 0.3s;
       }
-
-      .add-btn:hover {
-        background: #e0cfa9;
+      .logout-btn:hover {
+        background: rgba(255, 107, 107, 0.4);
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
       }
-
-      /* Roster Table */
-      .roster-table-wrapper {
-        background: rgba(35, 25, 15, 0.7);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 12px;
-        overflow: hidden;
-        margin-bottom: 30px;
-        backdrop-filter: blur(10px);
-      }
-
-      .roster-table {
-        width: 100%;
-        border-collapse: collapse;
-        color: #c4b5a0;
-      }
-
-      .roster-table thead {
-        background: linear-gradient(90deg, #8b6f47 0%, #6b4e2f 100%);
-      }
-
-      .roster-table th {
-        color: #fff;
-        padding: 16px;
-        text-align: left;
-        font-weight: 800;
-        text-transform: uppercase;
-        border-bottom: 2px solid #d4af37;
-        letter-spacing: 1px;
-        font-size: 12px;
-      }
-
-      .roster-table td {
-        padding: 12px 16px;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-      }
-
-      .roster-table tr:hover {
-        background: rgba(212, 175, 55, 0.06);
-      }
-
-      .class-tag {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .role-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .role-tank {
-        background: rgba(54, 162, 235, 0.2);
-        color: #36a2eb;
-      }
-
-      .role-healer {
-        background: rgba(75, 192, 75, 0.2);
-        color: #4bc04b;
-      }
-
-      .role-dps {
-        background: rgba(255, 99, 132, 0.2);
-        color: #ff6384;
-      }
-
-      .delete-btn {
-        padding: 6px 12px;
-        background: rgba(255, 68, 68, 0.2);
-        color: #ff4444;
-        border: 1px solid #ff4444;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-
-      .delete-btn:hover {
-        background: #ff4444;
-        color: #1a1a2e;
-      }
-
       @media (max-width: 768px) {
-        .admin-header h1 {
-          font-size: 32px;
-        }
-
-        .raids-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .admin-header-bar {
-          flex-direction: column;
-          gap: 15px;
-          text-align: center;
-        }
-
-        .logout-btn {
-          width: 100%;
-        }
-
-        .form-row {
-          grid-template-columns: 1fr;
-        }
-
-        .roster-table {
-          font-size: 12px;
-        }
-
-        .roster-table th,
-        .roster-table td {
-          padding: 8px;
-        }
-
         .hamburger {
           display: flex;
         }
-
         nav {
           display: none;
           position: absolute;
@@ -583,40 +497,37 @@
           right: 0;
           background: rgba(26, 26, 46, 0.98);
           flex-direction: column;
-          padding: 20px;
-          backdrop-filter: blur(10px);
+          padding: 25px;
+          border-radius: 20px;
+          margin: 10px 20px;
         }
-
         nav.active {
           display: flex;
         }
-
         nav ul {
           flex-direction: column;
           gap: 15px;
           width: 100%;
-          text-align: center;
+        }
+        .raids-grid {
+          grid-template-columns: 1fr;
+        }
+        .admin-header h1 {
+          font-size: 42px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Header -->
     <header>
       <div class="header-container">
-        <div class="logo">
-          <a href="index.html" class="logo">Eternis</a>
-        </div>
+        <div class="logo"><a href="index.html">Eternis</a></div>
         <button class="hamburger" id="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </button>
         <nav id="nav-menu">
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="roster.html">Roster</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
             <li><a href="progress.html">Progress</a></li>
             <li><a href="rules.html">Szabályok</a></li>
             <li><a href="apply.html">Jelentkezés</a></li>
@@ -627,14 +538,12 @@
     </header>
 
     <div class="admin-container">
-      <!-- Login Section -->
       <div class="login-section" id="loginSection">
         <div class="admin-header">
           <h1>🔐 Admin Panel</h1>
           <p>Eternis Guild Raid Tracker</p>
         </div>
-
-        <form id="loginForm">
+        <form onsubmit="handleLogin(event)">
           <div class="form-group">
             <label for="passwordInput">Admin Jelszó</label>
             <input
@@ -644,393 +553,198 @@
               required
             />
           </div>
-
           <button type="submit" class="login-btn">🔓 Bejelentkezés</button>
-
           <div class="error-message" id="errorMessage"></div>
         </form>
       </div>
 
-      <!-- Admin Dashboard -->
       <div class="admin-dashboard" id="adminDashboard">
-        <!-- Header -->
         <div class="admin-header-bar">
           <div class="admin-welcome">
             Üdvözlünk, <strong>Zulkor</strong>! 👑
           </div>
-          <button class="logout-btn" id="logoutBtn">🚪 Kijelentkezés</button>
+          <button class="logout-btn" onclick="handleLogout()">
+            🚪 Kijelentkezés
+          </button>
         </div>
 
-        <!-- Tab Navigation -->
         <div class="admin-tabs">
-          <button class="tab-btn active" data-tab="raids">
+          <button class="tab-btn active" onclick="switchTab(event, 'raids')">
             ⚔️ Raid Progress
           </button>
-          <button class="tab-btn" data-tab="roster">👥 Roster Kezelés</button>
         </div>
 
-        <!-- TAB 1: Raid Progress -->
         <div id="raids-tab" class="tab-content active">
-          <!-- Current Stats -->
-          <div class="stats-section">
-            <h2>Jelenlegi Progress</h2>
-            <div class="stats-grid" id="statsGrid">
-              <div class="stat-item">
-                <h4>Mythic+ Score</h4>
-                <div class="stat-value" id="mPlusScore">0</div>
-              </div>
-              <div class="stat-item">
-                <h4>Raid Kills</h4>
-                <div class="stat-value" id="raidKills">0</div>
-              </div>
-              <div class="stat-item">
-                <h4>Active Members</h4>
-                <div class="stat-value" id="activeMembers">0</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Raid Updates -->
-          <h2
-            style="
-              color: #d4af37;
-              margin-bottom: 20px;
-              font-size: 20px;
-              text-transform: uppercase;
-              letter-spacing: 1px;
-            "
-          >
-            🎯 Raid Frissítés
-          </h2>
-          <div class="raids-grid" id="raidsGrid">
-            <!-- 🔥 DYNAMIC RAID CARDS -->
-          </div>
-        </div>
-
-        <!-- TAB 2: Roster Management -->
-        <div id="roster-tab" class="tab-content">
-          <!-- Add Player Section -->
-          <div class="add-player-section">
-            <h3>➕ Játékos Hozzáadása</h3>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="playerName">Játékos Neve</label>
-                <input type="text" id="playerName" placeholder="pl: Zulkorrr" />
-              </div>
-
-              <div class="form-group">
-                <label for="playerClass">Osztály</label>
-                <select id="playerClass">
-                  <option value="">Válassz osztályt...</option>
-                  <option value="Warrior">Warrior</option>
-                  <option value="Paladin">Paladin</option>
-                  <option value="Hunter">Hunter</option>
-                  <option value="Rogue">Rogue</option>
-                  <option value="Priest">Priest</option>
-                  <option value="Shaman">Shaman</option>
-                  <option value="Mage">Mage</option>
-                  <option value="Warlock">Warlock</option>
-                  <option value="Monk">Monk</option>
-                  <option value="Druid">Druid</option>
-                  <option value="Demon Hunter">Demon Hunter</option>
-                  <option value="Death Knight">Death Knight</option>
-                  <option value="Evoker">Evoker</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="playerRole">Szerepkör</label>
-                <select id="playerRole">
-                  <option value="">Válassz szerepkört...</option>
-                  <option value="Tank">Tank</option>
-                  <option value="Healer">Healer</option>
-                  <option value="DPS">DPS</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="playerRaiderIO">Raider.IO URL</label>
-                <input
-                  type="text"
-                  id="playerRaiderIO"
-                  placeholder="pl: https://raider.io/characters/eu/ragnaros/zulkorrr"
-                />
-              </div>
-            </div>
-
-            <button class="add-btn" id="addPlayerBtn">
-              ✅ Játékos Hozzáadása
-            </button>
-            <div class="success-message" id="addPlayerSuccess"></div>
-          </div>
-
-          <!-- Current Roster -->
-          <div class="roster-table-wrapper">
-            <h3
-              style="
-                color: #d4af37;
-                padding: 20px 24px 10px;
-                margin: 0;
-                font-size: 18px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-              "
-            >
-              📋 Aktuális Roster
-            </h3>
-            <table class="roster-table">
-              <thead>
-                <tr>
-                  <th>Játékos Neve</th>
-                  <th>Osztály</th>
-                  <th>Szerepkör</th>
-                  <th>Raider.IO</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody id="rosterTableBody"></tbody>
-            </table>
-          </div>
+          <div class="raids-grid" id="raidsGrid"></div>
         </div>
       </div>
     </div>
 
     <script>
-      // 🔥 FIREBASE CONFIG (progress.js-ból)
+      console.log("🔥 ADMIN START");
+
       const firebaseConfig = {
         apiKey: "AIzaSyDxXh_68XFG_n8zUTAg1IPUe0lI4qQalsM",
         authDomain: "eternis-progress.firebaseapp.com",
+        databaseURL:
+          "https://eternis-progress-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "eternis-progress",
-        storageBucket: "eternis-progress.firebasestorage.app",
+        storageBucket: "eternis-progress.appspot.com",
         messagingSenderId: "820448513456",
         appId: "1:820448513456:web:521976f61a9f6cdc34da75",
-        measurementId: "G-X2C5X70TR5",
       };
 
-      // 🔥 FIREBASE INICIALIZÁLÁS
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
-
-      // Hamburger menu
-      const hamburger = document.getElementById("hamburger");
-      const navMenu = document.getElementById("nav-menu");
-
-      hamburger.addEventListener("click", () => {
-        hamburger.classList.toggle("active");
-        navMenu.classList.toggle("active");
-      });
-
-      // Admin password
+      const raidRef = db.ref("raidData");
       const ADMIN_PASSWORD = "EternisAdminsRoom123!";
 
-      // 🔥 GLOBAL DATA
-      let roster = [];
-      let stats = { mPlusScore: 0, raidKills: 0, activeMembers: 0 };
+      const ALL_RAIDS = {
+        Midnight: {
+          "The Voidspire": {
+            total: 6,
+            bosses: [
+              "Imperator Averzian",
+              "Vorasius",
+              "Fallen-King Salhadaar",
+              "Vaelgor & Ezzorak",
+              "Lightblinded Vanguard",
+              "Crown of the Cosmos",
+            ],
+          },
+          "The Dreamrift": {
+            total: 1,
+            bosses: ["Chimaerus the Undreamt God"],
+          },
+          "March on Quel'Danas": {
+            total: 2,
+            bosses: ["Belo'ren, Child of Al'ar", "Midnight Falls"],
+          },
+        },
+        "The War Within": {
+          "Manaforge Omega": {
+            total: 8,
+            bosses: [
+              "Plexus Sentinel",
+              "Loom'ithar",
+              "Soulbinder Naazindhri",
+              "Forgeweaver Araz",
+              "The Soul Hunters",
+              "Fractillus",
+              "Nexus-King Salhadaar",
+              "Dimensius",
+            ],
+          },
+        },
+      };
+
       let raidData = {};
 
-      // 🔥 FIREBASE LISTENERS
-      const statsRef = db.ref("stats");
-      const rosterRef = db.ref("roster");
-      const raidRef = db.ref("raidData");
-
-      // Stats listener
-      statsRef.on("value", (snapshot) => {
-        stats = snapshot.val() || {
-          mPlusScore: 0,
-          raidKills: 0,
-          activeMembers: 0,
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("hamburger").onclick = function () {
+          this.classList.toggle("active");
+          document.getElementById("nav-menu").classList.toggle("active");
         };
-        updateStats();
-      });
 
-      // Roster listener
-      rosterRef.on("value", (snapshot) => {
-        roster = snapshot.val() || [];
-        updateRosterTable();
-      });
-
-      // Raid data listener
-      raidRef.on("value", (snapshot) => {
-        raidData = snapshot.val() || {};
-        generateRaidCards();
-      });
-
-      // Login functionality
-      document
-        .getElementById("loginForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const password = document.getElementById("passwordInput").value;
-
-          if (password === ADMIN_PASSWORD) {
-            document.getElementById("loginSection").classList.add("hidden");
-            document.getElementById("adminDashboard").classList.add("show");
-
-            // 🔥 LOAD DATA ON LOGIN
-            updateStats();
-            updateRosterTable();
-            generateRaidCards();
-          } else {
-            document.getElementById("errorMessage").textContent =
-              "❌ Helytelen jelszó!";
-            document.getElementById("errorMessage").classList.add("show");
+        raidRef.on("value", (snap) => {
+          raidData = snap.val() || {};
+          if (
+            document.getElementById("adminDashboard").classList.contains("show")
+          ) {
+            loadRaids();
           }
         });
-
-      // Logout
-      document
-        .getElementById("logoutBtn")
-        .addEventListener("click", function () {
-          document.getElementById("loginSection").classList.remove("hidden");
-          document.getElementById("adminDashboard").classList.remove("show");
-          document.getElementById("passwordInput").value = "";
-          document.getElementById("errorMessage").classList.remove("show");
-        });
-
-      // Tab switching
-      document.querySelectorAll(".tab-btn").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          document
-            .querySelectorAll(".tab-btn")
-            .forEach((b) => b.classList.remove("active"));
-          document
-            .querySelectorAll(".tab-content")
-            .forEach((c) => c.classList.remove("active"));
-
-          this.classList.add("active");
-          document
-            .getElementById(this.dataset.tab + "-tab")
-            .classList.add("active");
-        });
       });
 
-      // 🔥 UPDATE STATS
-      function updateStats() {
-        document.getElementById("mPlusScore").textContent =
-          stats.mPlusScore || 0;
-        document.getElementById("raidKills").textContent = stats.raidKills || 0;
-        document.getElementById("activeMembers").textContent =
-          stats.activeMembers || 0;
+      function handleLogin(e) {
+        e.preventDefault();
+        const pass = document.getElementById("passwordInput").value;
+        if (pass === ADMIN_PASSWORD) {
+          document.getElementById("loginSection").classList.add("hidden");
+          document.getElementById("adminDashboard").classList.add("show");
+          loadRaids();
+        } else {
+          const err = document.getElementById("errorMessage");
+          err.textContent = "❌ Hibás jelszó!";
+          err.classList.add("show");
+          setTimeout(() => err.classList.remove("show"), 2000);
+        }
       }
 
-      // 🔥 GENERATE RAID CARDS
-      function generateRaidCards() {
-        const raidsGrid = document.getElementById("raidsGrid");
-        if (!raidsGrid) return;
+      function handleLogout() {
+        document.getElementById("loginSection").classList.remove("hidden");
+        document.getElementById("adminDashboard").classList.remove("show");
+      }
 
-        raidsGrid.innerHTML = "";
-        Object.keys(raidData).forEach((expansion) => {
-          Object.keys(raidData[expansion]).forEach((raidName) => {
-            const raid = raidData[expansion][raidName];
+      function switchTab(e, tabName) {
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((tab) => tab.classList.remove("active"));
+        document.getElementById(tabName + "-tab").classList.add("active");
+      }
+
+      function loadRaids() {
+        const container = document.getElementById("raidsGrid");
+        container.innerHTML = "";
+        for (let expansion in ALL_RAIDS) {
+          const raids = ALL_RAIDS[expansion];
+          for (let instance in raids) {
             const card = document.createElement("div");
             card.className = "raid-card";
-            card.innerHTML = `
-              <h3>${raidName}</h3>
-              <div class="form-group">
-                <label>Kills / Total</label>
-                <select id="raid-${expansion}-${raidName}">
-                  ${Array.from(
-                    { length: raid.total + 1 },
-                    (_, i) =>
-                      `<option value="${i}" ${i === raid.kills ? "selected" : ""}>${i}/${raid.total}</option>`,
-                  ).join("")}
-                </select>
-              </div>
-              <button class="update-btn" onclick="updateRaidProgress('${expansion}', '${raidName}')">
-                💾 Frissítés
-              </button>
-              <div class="success-message" id="success-${expansion}-${raidName}"></div>
-            `;
-            raidsGrid.appendChild(card);
-          });
-        });
-      }
-
-      // 🔥 UPDATE RAID PROGRESS
-      window.updateRaidProgress = function (expansion, raidName) {
-        const select = document.getElementById(`raid-${expansion}-${raidName}`);
-        const kills = parseInt(select.value);
-        const successMsg = document.getElementById(
-          `success-${expansion}-${raidName}`,
-        );
-
-        db.ref(`raidData/${expansion}/${raidName}/kills`)
-          .set(kills)
-          .then(() => {
-            successMsg.textContent = "✅ Sikeresen frissítve!";
-            successMsg.classList.add("show");
-            setTimeout(() => successMsg.classList.remove("show"), 3000);
-          });
-      };
-
-      // Add player
-      document
-        .getElementById("addPlayerBtn")
-        .addEventListener("click", function () {
-          const name = document.getElementById("playerName").value.trim();
-          const playerClass = document.getElementById("playerClass").value;
-          const role = document.getElementById("playerRole").value;
-          const raiderio = document
-            .getElementById("playerRaiderIO")
-            .value.trim();
-
-          if (name && playerClass && role) {
-            const newPlayer = { name, class: playerClass, role, raiderio };
-
-            // 🔥 FIREBASE SAVE
-            const newKey = rosterRef.push().key;
-            rosterRef
-              .child(newKey)
-              .set(newPlayer)
-              .then(() => {
-                document.getElementById("addPlayerSuccess").textContent =
-                  "✅ Játékos sikeresen hozzáadva!";
-                document
-                  .getElementById("addPlayerSuccess")
-                  .classList.add("show");
-
-                // Clear form
-                document.getElementById("playerName").value = "";
-                document.getElementById("playerClass").value = "";
-                document.getElementById("playerRole").value = "";
-                document.getElementById("playerRaiderIO").value = "";
-
-                setTimeout(() => {
-                  document
-                    .getElementById("addPlayerSuccess")
-                    .classList.remove("show");
-                }, 3000);
-              });
+            let html = `<h3>${expansion} - ${instance}</h3><div class="boss-list">`;
+            raids[instance].bosses.forEach((boss) => {
+              const checked = raidData[expansion]?.[instance]?.[boss]
+                ? "checked"
+                : "";
+              html += `<label class="boss-checkbox"><input type="checkbox" data-expansion="${expansion}" data-instance="${instance}" data-boss="${boss}" ${checked} onchange="updateBoss(this)"> ${boss}</label>`;
+            });
+            html += `</div>`;
+            html += `<div class="kill-count" id="count-${encodeURIComponent(expansion)}-${encodeURIComponent(instance)}">0 / ${raids[instance].total}</div>`;
+            html += `<button class="update-btn" onclick="saveRaid(\`${encodeURIComponent(expansion)}\`, \`${encodeURIComponent(instance)}\`)">💾 Mentés</button>`;
+            card.innerHTML = html;
+            container.appendChild(card);
+            updateLiveCount(expansion, instance);
           }
-        });
-
-      // Update roster table
-      function updateRosterTable() {
-        const tbody = document.getElementById("rosterTableBody");
-        tbody.innerHTML = "";
-
-        roster.forEach((player, index) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${player.name}</td>
-            <td><span class="class-tag">${player.class}</span></td>
-            <td><span class="role-${player.role.toLowerCase()} role-badge">${player.role}</span></td>
-            <td><a href="${player.raiderio}" target="_blank">🔗</a></td>
-            <td><button class="delete-btn" onclick="deletePlayer('${player.key}')">🗑️ Töröl</button></td>
-          `;
-          tbody.appendChild(row);
-        });
+        }
       }
 
-      // Delete player
-      window.deletePlayer = function (key) {
-        if (confirm("Biztosan törölni szeretnéd ezt a játékost?")) {
-          rosterRef.child(key).remove();
-        }
-      };
+      function updateBoss(el) {
+        const expansion = el.dataset.expansion;
+        const instance = el.dataset.instance;
+        const boss = el.dataset.boss;
+        if (!raidData[expansion]) raidData[expansion] = {};
+        if (!raidData[expansion][instance]) raidData[expansion][instance] = {};
+        raidData[expansion][instance][boss] = el.checked;
+        updateLiveCount(expansion, instance);
+      }
 
-      console.log("✅ ETERNIS ADMIN PANEL - FULLY FIREBASE SYNCED! 🚀");
+      function updateLiveCount(expansion, instance) {
+        const total = ALL_RAIDS[expansion][instance].total;
+        const kills = Object.values(
+          raidData[expansion]?.[instance] || {},
+        ).filter((v) => v).length;
+        const el = document.getElementById(
+          `count-${encodeURIComponent(expansion)}-${encodeURIComponent(instance)}`,
+        );
+        if (el) {
+          el.textContent = `${kills} / ${total}`;
+          el.classList.toggle("complete", kills === total);
+        }
+      }
+
+      function saveRaid(expansionEncoded, instanceEncoded) {
+        const expansion = decodeURIComponent(expansionEncoded);
+        const instance = decodeURIComponent(instanceEncoded);
+        raidRef
+          .child(`${expansion}/${instance}`)
+          .set(raidData[expansion][instance])
+          .then(() => alert("✅ Mentés sikeres!"))
+          .catch((err) => alert("❌ Mentés sikertelen: " + err));
+      }
     </script>
   </body>
 </html>

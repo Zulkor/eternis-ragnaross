@@ -334,3 +334,98 @@
     font-size: 10px;
   }
 }
+/* ============ BOSS TABLE STATUS FANCY ============ */
+.boss-table td:last-child {
+  text-align: right; /* Keep the status right-aligned */
+}
+
+.boss-table td:last-child .status-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-width: 80px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: default;
+}
+
+/* Killed badge */
+.status-killed {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  border: none;
+  box-shadow:
+    0 0 10px rgba(34, 197, 94, 0.6),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.status-killed::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+}
+
+.status-killed:hover::before {
+  top: 0;
+  left: 0;
+}
+
+/* Alive badge */
+.status-alive {
+  background: linear-gradient(135deg, #555, #777);
+  color: #eee;
+  border: none;
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.status-alive::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.05);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+}
+
+.status-alive:hover::before {
+  top: 0;
+  left: 0;
+}
+
+/* Hover scale effect */
+.status-badge:hover {
+  transform: scale(1.05);
+}
+/* ============ BOSS NAME UPGRADE ============ */
+.boss-table td:first-child {
+  font-size: 18px; /* Bigger text */
+  font-weight: 700; /* Bold */
+  color: #ffffff; /* White color */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); /* Subtle depth */
+}
+
+/* Optional: on hover make it glow a little */
+.boss-table tr:hover td:first-child {
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    0 0 10px rgba(212, 175, 55, 0.4);
+  transition: all 0.3s ease;
+}

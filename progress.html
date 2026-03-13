@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/progress-styles.css" />
 
-    <!-- 🔥 FIREBASE CDN (CORRECT ORDER) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   </head>
@@ -31,8 +31,7 @@
         <nav id="nav-menu">
           <ul>
             <li><a href="index.html">Home</a></li>
-            <!-- <li><a href="roster.html">Roster</a></li> -->
-            <!-- <li><a href="gallery.html">Gallery</a></li> -->
+            <li><a href="gallery.html">Gallery</a></li>
             <li><a href="progress.html">Progress</a></li>
             <li><a href="rules.html">Szabályok</a></li>
             <li><a href="apply.html">Jelentkezés</a></li>
@@ -55,13 +54,12 @@
       <div class="progress-filters">
         <div class="filter-group expansion-group">
           <button
-            class="filter-btn active"
+            class="filter-btn"
             data-expansion="The War Within"
             onclick="selectExpansion(this)"
           >
-            The War Within
-          </button>
-          <button
+            The War Within</button
+          ><button
             class="filter-btn"
             data-expansion="Midnight"
             onclick="selectExpansion(this)"
@@ -71,21 +69,24 @@
         </div>
 
         <div class="filter-group raid-group" id="raidGroup">
-          <!-- Populated by JavaScript -->
+          <!-- JS populates raids here -->
         </div>
       </div>
 
       <!-- Progress Stats -->
       <div class="progress-stats">
         <h2 id="raidName" class="progress-raid-name">
-          Manaforge Omega <span class="mythic-label">MYTHIC</span>
+          <span id="raidTitle">Raid Name</span>
+          <span class="mythic-label">MYTHIC</span>
         </h2>
+
         <div class="progress-counter">
-          <span id="killCount" class="kill-count">2</span>
-          <span class="total-count">/<span id="totalCount">8</span>M</span>
+          <span id="killCount" class="kill-count">0</span>
+          <span class="total-count">/<span id="totalCount">0</span>M</span>
         </div>
+
         <div id="progressBar" class="progress-bar">
-          <div id="progressFill" class="progress-fill" style="width: 25%"></div>
+          <div id="progressFill" class="progress-fill" style="width: 0%"></div>
         </div>
       </div>
 
@@ -99,7 +100,7 @@
             </tr>
           </thead>
           <tbody id="bossTableBody">
-            <!-- Populated by JavaScript -->
+            <!-- JS populates bosses here -->
           </tbody>
         </table>
       </div>
@@ -108,7 +109,6 @@
     <footer>
       <div class="footer-content">
         <div class="footer-logo">Eternis</div>
-
         <div class="footer-links">
           <a
             href="https://discord.gg/eternis"
@@ -119,28 +119,152 @@
           <a href="apply.html" class="footer-link">Apply</a>
           <a href="rules.html" class="footer-link">Szabályok</a>
         </div>
-
         <div class="footer-info">
           <p>Mythic raiding guild | CE or bust | Trial applications open</p>
-          <p>WoW The War Within | EU servers</p>
         </div>
-
         <div class="footer-divider"></div>
-
         <p class="footer-copyright">
           © 2026 Eternis Guild. All rights reserved.
         </p>
       </div>
     </footer>
 
-    <script src="js/progress.js"></script>
     <script>
       const hamburger = document.getElementById("hamburger");
       const navMenu = document.getElementById("nav-menu");
-
       hamburger.addEventListener("click", () => {
         hamburger.classList.toggle("active");
         navMenu.classList.toggle("active");
+      });
+
+      // 🔹 Firebase setup
+      const firebaseConfig = {
+        apiKey: "AIzaSyDxXh_68XFG_n8zUTAg1IPUe0lI4qQalsM",
+        authDomain: "eternis-progress.firebaseapp.com",
+        databaseURL:
+          "https://eternis-progress-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "eternis-progress",
+        storageBucket: "eternis-progress.appspot.com",
+        messagingSenderId: "820448513456",
+        appId: "1:820448513456:web:521976f61a9f6cdc34da75",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+      const raidRef = db.ref("raidData");
+
+      // 🔹 RAID CONFIG
+      const ALL_RAIDS = {
+        Midnight: {
+          "The Voidspire": [
+            "Imperator Averzian",
+            "Vorasius",
+            "Fallen-King Salhadaar",
+            "Vaelgor & Ezzorak",
+            "Lightblinded Vanguard",
+            "Crown of the Cosmos",
+          ],
+          "The Dreamrift": ["Chimaerus the Undreamt God"],
+          "March on Quel'Danas": ["Belo'ren, Child of Al'ar", "Midnight Falls"],
+        },
+        "The War Within": {
+          "Manaforge Omega": [
+            "Plexus Sentinel",
+            "Loom'ithar",
+            "Soulbinder Naazindhri",
+            "Forgeweaver Araz",
+            "The Soul Hunters",
+            "Fractillus",
+            "Nexus-King Salhadaar",
+            "Dimensius",
+          ],
+        },
+      };
+
+      let selectedExpansion = "Midnight";
+      let selectedRaid = "The Voidspire";
+      let currentData = {};
+
+      const raidGroupEl = document.getElementById("raidGroup");
+      const raidTitleEl = document.getElementById("raidTitle");
+      const killCountEl = document.getElementById("killCount");
+      const totalCountEl = document.getElementById("totalCount");
+      const progressFillEl = document.getElementById("progressFill");
+      const bossTableBody = document.getElementById("bossTableBody");
+
+      function selectExpansion(btn) {
+        document
+          .querySelectorAll(".expansion-group .filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedExpansion = btn.dataset.expansion;
+        selectedRaid = Object.keys(ALL_RAIDS[selectedExpansion])[0];
+        populateRaids();
+      }
+
+      function populateRaids() {
+        raidGroupEl.innerHTML = "";
+        Object.keys(ALL_RAIDS[selectedExpansion]).forEach((raid) => {
+          const raidBtn = document.createElement("button");
+          raidBtn.className = "filter-btn";
+          raidBtn.textContent = raid;
+          raidBtn.onclick = () => selectRaid(raid);
+          if (raid === selectedRaid) raidBtn.classList.add("active");
+          raidGroupEl.appendChild(raidBtn);
+        });
+        renderBossTable();
+      }
+
+      function selectRaid(raid) {
+        selectedRaid = raid;
+        raidGroupEl
+          .querySelectorAll("button")
+          .forEach((b) => b.classList.remove("active"));
+        event.target.classList.add("active");
+        renderBossTable();
+      }
+
+      // 🔹 Fancy render for bosses
+      function renderBossTable() {
+        const bosses = ALL_RAIDS[selectedExpansion][selectedRaid];
+        const raidData = currentData[selectedExpansion]?.[selectedRaid] || {};
+
+        bossTableBody.innerHTML = "";
+        let kills = 0;
+
+        bosses.forEach((boss) => {
+          const killed = raidData[boss] || false;
+          if (killed) kills++;
+
+          const statusClass = killed ? "status-killed" : "status-alive";
+          const statusText = killed ? "Killed" : "Alive";
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+        <td>${boss}</td>
+        <td style="text-align:right;">
+          <span class="status-badge ${statusClass}">${statusText}</span>
+        </td>
+      `;
+          bossTableBody.appendChild(row);
+        });
+
+        raidTitleEl.textContent = selectedRaid;
+        killCountEl.textContent = kills;
+        totalCountEl.textContent = bosses.length;
+        progressFillEl.style.width = (kills / bosses.length) * 100 + "%";
+      }
+
+      raidRef.on("value", (snapshot) => {
+        currentData = snapshot.val() || {};
+        renderBossTable();
+      });
+
+      // 🔹 Init: select Midnight instantly
+      window.addEventListener("DOMContentLoaded", () => {
+        const midnightBtn = document.querySelector(
+          '.expansion-group .filter-btn[data-expansion="Midnight"]',
+        );
+        if (midnightBtn) selectExpansion(midnightBtn);
       });
     </script>
   </body>
