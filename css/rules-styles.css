@@ -199,3 +199,37 @@
     0 4px 12px rgba(0, 0, 0, 0.5),
     0 0 15px rgba(212, 175, 55, 0.2) inset;
 }
+/* ============ MOBILE RESPONSIVE FIXES ============ */
+@media (max-width: 768px) {
+  .rules-main {
+    padding: 40px 20px 30px; /* Reduce side padding */
+    max-width: 100%;
+  }
+
+  .rules-grid {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 30px;
+    margin: 0 auto;
+    max-width: 500px; /* Center container */
+    padding: 0 10px; /* Extra side margin */
+  }
+
+  .rules-section {
+    padding: 30px 25px; /* Slightly smaller padding */
+    margin: 0 auto; /* Center each section */
+    max-width: 100%;
+  }
+
+  .rules-title {
+    font-size: 42px; /* Smaller title */
+    margin-bottom: 40px;
+  }
+
+  .rules-section-title {
+    font-size: 24px;
+  }
+
+  .apply-button-wrapper {
+    padding: 0 10px; /* Prevent edge clipping */
+  }
+}
