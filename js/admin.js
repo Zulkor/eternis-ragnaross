@@ -66,9 +66,14 @@ raidRef.on("value", (snap) => {
 
 // 🔹 FETCH ROSTER DATA
 rosterRef.on("value", (snap) => {
-  rosterData = snap.val() || { players: [] };
-  if (document.getElementById("adminDashboard").classList.contains("show")) {
-    loadRoster();
+  const data = snap.val() || { players: [] };
+
+  if (JSON.stringify(data) !== JSON.stringify(rosterData)) {
+    rosterData = data;
+
+    if (document.getElementById("adminDashboard").classList.contains("show")) {
+      loadRoster();
+    }
   }
 });
 
@@ -76,15 +81,18 @@ rosterRef.on("value", (snap) => {
 function handleLogin(e) {
   e.preventDefault();
   const pass = document.getElementById("passwordInput").value;
+
   if (pass === ADMIN_PASSWORD) {
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("adminDashboard").classList.add("show");
+
     loadRaids();
     loadRoster();
   } else {
     const err = document.getElementById("errorMessage");
     err.textContent = "❌ Hibás jelszó!";
     err.classList.add("show");
+
     setTimeout(() => err.classList.remove("show"), 2000);
   }
 }
@@ -99,10 +107,12 @@ function handleLogout() {
 function loadRaids() {
   const container = document.getElementById("raidsGrid");
   if (!container) return;
+
   container.innerHTML = "";
 
   for (let expansion in ALL_RAIDS) {
     const raids = ALL_RAIDS[expansion];
+
     for (let instance in raids) {
       const card = document.createElement("div");
       card.className = "raid-card";
@@ -113,32 +123,51 @@ function loadRaids() {
         const checked = raidData[expansion]?.[instance]?.[boss]
           ? "checked"
           : "";
-        html += `<label class="boss-checkbox">
-                    <input type="checkbox"
-                           data-expansion="${expansion}"
-                           data-instance="${instance}"
-                           data-boss="${boss}"
-                           ${checked}>
-                    ${boss}
-                 </label>`;
+
+        html += `
+          <label class="boss-checkbox">
+            <input type="checkbox"
+              data-expansion="${expansion}"
+              data-instance="${instance}"
+              data-boss="${boss}"
+              ${checked}>
+            ${boss}
+          </label>
+        `;
       });
 
       html += `</div>`;
-      html += `<div class="kill-count" id="count-${expansion.replace(/ /g, "_")}-${instance.replace(/ /g, "_")}">0 / ${raids[instance].length}</div>`;
-      html += `<button class="update-btn" data-expansion="${expansion}" data-instance="${instance}">💾 Mentés</button>`;
+
+      html += `
+        <div class="kill-count" id="count-${expansion.replace(
+          / /g,
+          "_",
+        )}-${instance.replace(/ /g, "_")}">
+          0 / ${raids[instance].length}
+        </div>
+      `;
+
+      html += `
+        <button class="update-btn"
+          data-expansion="${expansion}"
+          data-instance="${instance}">
+          💾 Mentés
+        </button>
+      `;
 
       card.innerHTML = html;
       container.appendChild(card);
 
-      // Checkbox listener
+      // checkbox listener
       card.querySelectorAll("input[type=checkbox]").forEach((chk) => {
         chk.addEventListener("change", () => updateBoss(chk));
       });
 
-      // Save button listener
+      // save button
       card.querySelector(".update-btn").addEventListener("click", (e) => {
         const exp = e.currentTarget.dataset.expansion;
         const inst = e.currentTarget.dataset.instance;
+
         saveRaid(exp, inst);
       });
 
@@ -157,25 +186,29 @@ function updateBoss(el) {
   if (!raidData[expansion][instance]) raidData[expansion][instance] = {};
 
   raidData[expansion][instance][boss] = el.checked;
+
   updateLiveCount(expansion, instance);
 }
 
 // 🔹 UPDATE LIVE COUNT
 function updateLiveCount(expansion, instance) {
   const total = ALL_RAIDS[expansion][instance].length;
+
   const kills = Object.values(raidData[expansion]?.[instance] || {}).filter(
     (v) => v,
   ).length;
+
   const el = document.getElementById(
     `count-${expansion.replace(/ /g, "_")}-${instance.replace(/ /g, "_")}`,
   );
+
   if (el) {
     el.textContent = `${kills} / ${total}`;
     el.classList.toggle("complete", kills === total);
   }
 }
 
-// 🔹 SAVE RAID TO FIREBASE
+// 🔹 SAVE RAID
 function saveRaid(expansion, instance) {
   raidRef
     .child(`${expansion}/${instance}`)
@@ -184,7 +217,7 @@ function saveRaid(expansion, instance) {
     .catch((err) => alert("❌ Mentés sikertelen: " + err));
 }
 
-// 🔹 LOAD ROSTER IN ADMIN
+// 🔹 LOAD ROSTER
 function loadRoster() {
   const container = document.getElementById("rosterAdminContainer");
   if (!container) return;
@@ -194,19 +227,34 @@ function loadRoster() {
   rosterData.players.forEach((player, index) => {
     const row = document.createElement("div");
     row.className = "roster-card";
+
     row.innerHTML = `
-  <div class="player-info">
-    <h3>${player.name}</h3>
-    <p><strong>Class:</strong> ${player.class}</p>
-    <p><strong>Role:</strong> ${player.role}</p>
-    <p><a href="${player.raiderIO}" target="_blank">Raider.IO</a></p>
-  </div>
-  <div class="player-actions">
-    <button onclick="deletePlayer(${idx})">❌ Delete</button>
-    <button onclick="movePlayer(${idx},${idx - 1})">⬆️ Up</button>
-    <button onclick="movePlayer(${idx},${idx + 1})">⬇️ Down</button>
-  </div>
-`;
+      <div class="player-info">
+        <h3>${player.name}</h3>
+        <p><strong>Class:</strong> ${player.class}</p>
+        <p><strong>Role:</strong> ${player.role}</p>
+        <p><a href="${player.raiderIO}" target="_blank">Raider.IO</a></p>
+      </div>
+
+      <div class="player-actions">
+        <button class="delete-btn" onclick="deletePlayer(${index})">
+          🗑️ Delete
+        </button>
+
+        <button class="move-btn"
+          onclick="movePlayer(${index}, ${index - 1})"
+          ${index === 0 ? "disabled" : ""}>
+          ⬆️ Up
+        </button>
+
+        <button class="move-btn"
+          onclick="movePlayer(${index}, ${index + 1})"
+          ${index === rosterData.players.length - 1 ? "disabled" : ""}>
+          ⬇️ Down
+        </button>
+      </div>
+    `;
+
     container.appendChild(row);
   });
 }
@@ -214,14 +262,18 @@ function loadRoster() {
 // 🔹 ADD PLAYER
 function addPlayer(player) {
   if (!rosterData.players) rosterData.players = [];
+
   rosterData.players.push(player);
+
   saveRoster();
 }
 
 // 🔹 DELETE PLAYER
 function deletePlayer(index) {
   if (!rosterData.players || !rosterData.players[index]) return;
+
   rosterData.players.splice(index, 1);
+
   saveRoster();
 }
 
@@ -233,18 +285,26 @@ function movePlayer(oldIndex, newIndex) {
     newIndex >= rosterData.players.length
   )
     return;
-  const [player] = rosterData.players.splice(oldIndex, 1);
-  rosterData.players.splice(newIndex, 0, player);
+
+  const players = [...rosterData.players];
+
+  const movedPlayer = players.splice(oldIndex, 1)[0];
+  players.splice(newIndex, 0, movedPlayer);
+
+  rosterData.players = players;
+
+  loadRoster(); // update UI instantly
   saveRoster();
 }
 
-// 🔹 SAVE ROSTER TO FIREBASE
+// 🔹 SAVE ROSTER
 function saveRoster() {
   rosterRef
     .set(rosterData)
     .then(() => {
       loadRoster();
       alert("✅ Roster updated successfully!");
+
       window.dispatchEvent(new Event("rosterDataUpdated"));
     })
     .catch((err) => alert("❌ Failed to save roster: " + err));

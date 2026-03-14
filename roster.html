@@ -131,38 +131,38 @@
       function renderRosterTable() {
         const tbody = document.getElementById("rosterTableBody");
         const playerCount = document.getElementById("playerCount");
+
         tbody.innerHTML = "";
 
         if (!rosterData || rosterData.length === 0) {
           tbody.innerHTML = `
-            <tr>
-              <td colspan="5" style="text-align:center;color:#888;">
-                Jelenleg nincs játékos a rosztérben
-              </td>
-            </tr>`;
+      <tr>
+        <td colspan="5" style="text-align:center;color:#888;">
+          Jelenleg nincs játékos a rosztérben
+        </td>
+      </tr>`;
           playerCount.textContent = "0 játékos";
           return;
         }
 
-        // Sort: Tank → Healer → DPS
-        const roleOrder = { Tank: 0, Healer: 1, DPS: 2 };
-        const sortedRoster = [...rosterData].sort(
-          (a, b) => (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99),
-        );
-
-        sortedRoster.forEach((player) => {
+        // 🔹 IMPORTANT: DO NOT SORT — keep Firebase order
+        rosterData.forEach((player) => {
           const classColorClass = classColorMap[player.class] || "";
           const roleClass = roleMap[player.role] || "dps";
+
           const row = document.createElement("tr");
+
           row.innerHTML = `
-            <td><span class="player-name ${classColorClass}">${player.name}</span></td>
-            <td>${player.class}</td>
-            <td><span class="role-badge ${roleClass}">${player.role}</span></td>
-            <td><a href="${player.raiderIO}" target="_blank" class="raiderio-link">Raider.IO</a></td>
-            <td><span class="status-active">Active</span></td>
-          `;
+      <td><span class="player-name ${classColorClass}">${player.name}</span></td>
+      <td>${player.class}</td>
+      <td><span class="role-badge ${roleClass}">${player.role}</span></td>
+      <td><a href="${player.raiderIO}" target="_blank" class="raiderio-link">Raider.IO</a></td>
+      <td><span class="status-active">Active</span></td>
+    `;
+
           tbody.appendChild(row);
         });
+
         playerCount.textContent = `${rosterData.length} Player`;
       }
 
@@ -172,14 +172,18 @@
       function loadRoster() {
         rosterRef.on("value", (snapshot) => {
           const data = snapshot.val();
+
           if (data && Array.isArray(data)) {
             rosterData = data;
+
             localStorage.setItem("rosterData", JSON.stringify(rosterData));
+
             renderRosterTable();
           } else {
-            // fallback to localStorage
             const saved = localStorage.getItem("rosterData");
+
             if (saved) rosterData = JSON.parse(saved);
+
             renderRosterTable();
           }
         });
