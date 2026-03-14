@@ -129,20 +129,33 @@
   background: linear-gradient(90deg, transparent, #a855f7, transparent);
 }
 
-/* ============ APPLY BUTTON UPGRADE ============ */
+/* Container around the button */
+.apply-button-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* horizontal center */
+  margin-top: 40px; /* adjust as needed */
+}
+
+/* ============ APPLY BUTTON UPDATED ============ */
 .apply-button {
-  display: inline-block;
-  background: linear-gradient(135deg, #d4af37, #e0cfa9, #f7e6b2);
+  display: block;
+  background: linear-gradient(
+    135deg,
+    #a37f24,
+    #c4a75a,
+    #e0c47a
+  ); /* darker gold */
   color: #111;
-  padding: 20px 50px;
+  padding: 16px 42px;
   font-size: 18px;
   font-weight: 900;
-  border-radius: 30px;
+  border-radius: 28px;
   text-decoration: none;
   box-shadow:
-    0 6px 15px rgba(212, 175, 55, 0.5),
-    0 0 25px rgba(212, 175, 55, 0.2) inset;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    0 4px 10px rgba(0, 0, 0, 0.55),
+    /* darker outer shadow */ 0 0 15px rgba(212, 175, 55, 0.25) inset; /* softer inner glow */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   letter-spacing: 2px;
   border: none;
   cursor: pointer;
@@ -151,16 +164,17 @@
   overflow: hidden;
 }
 
+/* softer highlight */
 .apply-button::before {
   content: "";
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: -60%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.22) 0%,
     rgba(255, 255, 255, 0) 70%
   );
   transform: rotate(25deg);
@@ -168,65 +182,20 @@
 }
 
 .apply-button:hover::before {
-  top: -20%;
-  left: -20%;
+  top: -30%;
+  left: -30%;
 }
 
 .apply-button:hover {
-  transform: translateY(-4px) scale(1.05);
+  transform: translateY(-3px) scale(1.03);
   box-shadow:
-    0 12px 30px rgba(212, 175, 55, 0.7),
-    0 0 35px rgba(212, 175, 55, 0.3) inset;
+    0 8px 20px rgba(0, 0, 0, 0.65),
+    0 0 20px rgba(212, 175, 55, 0.3) inset;
 }
 
 .apply-button:active {
-  transform: translateY(-2px) scale(0.98);
+  transform: translateY(-1px) scale(0.98);
   box-shadow:
-    0 6px 15px rgba(212, 175, 55, 0.4),
-    0 0 25px rgba(212, 175, 55, 0.15) inset;
-}
-
-/* ============ FOOTER LINK UPGRADE ============ */
-.footer-link {
-  color: #d4af37;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-  padding: 10px 22px;
-  border-radius: 12px;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  background: rgba(212, 175, 55, 0.05);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.footer-link::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0) 80%
-  );
-  transform: translateY(-50%) rotate(25deg);
-  transition: all 0.5s ease;
-}
-
-.footer-link:hover::after {
-  left: -20%;
-}
-
-.footer-link:hover {
-  background: rgba(212, 175, 55, 0.15);
-  border-color: #d4af37;
-  box-shadow:
-    0 0 20px rgba(212, 175, 55, 0.4),
-    0 4px 15px rgba(212, 175, 55, 0.3) inset;
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(212, 175, 55, 0.2) inset;
 }
